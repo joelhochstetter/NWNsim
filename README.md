@@ -8,7 +8,7 @@ Simulation and network generation code is written by past and present members of
 Please direct questions to Joel Hochstetter (joel.hochstetter@sydney.edu.au).
 
 ## Requirements
-For simulation MATLAB is required. Code has been tested on MATLAB2016b and MATLAB2020b.
+For simulations MATLAB is required. Code has been tested on MATLAB2016b and MATLAB2020b.
 
 The following MATLAB toolboxes are required:
 - Signal Processing Toolbox
