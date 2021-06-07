@@ -14,7 +14,7 @@ The following MATLAB toolboxes are required:
 - Signal Processing Toolbox
 - Statistics and Machine Learning Toolbox
 
-For network generation: Python 2.7 or above is required.
+For network generation: Python 2.7 or above is required. Two pre-generated networks are provided.
 
 ## Getting started
 Add all files and sub-folders in simulator to MATLAB path. Follow instructions in "figures" folder to run the necessary simulations and analysis for each figure from the manuscript. 
