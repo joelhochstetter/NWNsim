@@ -3,7 +3,7 @@
 This repository contains code to simulate neuromorphic nanowire nanowires and produce all simulations analysis for the manuscript
 > Joel Hochstetter, Ruomin Zhu, Alon Loeffler, Adrian Diaz-Alvarez, Tomonobu Nakayama, Zdenka Kuncic _Avalanches and edge-of-chaos learning in neuromorphic nanowire networks_
 
-Simulation and network generation code is written by past and present members of the Kuncic group at the University of Sydney: Joel Hochstetter, Ruomin Zhu, Alon Loeffler, Zdenka Kuncic, Paula Sanz-Leon.
+Simulation and network generation code is written by past and present members of the Kuncic group at the University of Sydney: Joel Hochstetter, Ruomin Zhu, Alon Loeffler, Zdenka Kuncic, Paula Sanz-Leon, Ido Marcus and Miro Astore. Authors of each function are attributed within.
 
 Please direct questions to Joel Hochstetter (joel.hochstetter@sydney.edu.au).
 
