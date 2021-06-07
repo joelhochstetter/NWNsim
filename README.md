@@ -17,4 +17,4 @@ The following MATLAB toolboxes are required:
 For network generation: Python 2.7 or above is required.
 
 ## Getting started
-Add all files and sub-folders in simulator to MATLAB path. Follow instructions in figures folder to run the necessary simulations and analysis for each figure from the manuscript. 
+Add all files and sub-folders in simulator to MATLAB path. Follow instructions in "figures" folder to run the necessary simulations and analysis for each figure from the manuscript. 
