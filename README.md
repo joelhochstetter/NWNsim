@@ -13,7 +13,7 @@ For simulations MATLAB is required. Code has been tested on MATLAB2016b and MATL
 The following MATLAB toolboxes are required:
 - Signal Processing Toolbox
 - Statistics and Machine Learning Toolbox
-- Neural Networks Toolbox
+- Deep Learning Toolbox
 
 For network generation: Python 2.7 or above is required. Two pre-generated networks are provided.
 
