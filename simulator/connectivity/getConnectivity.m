@@ -54,8 +54,6 @@ function Connectivity = getConnectivity(Connectivity)
 %                                   connects.
 %                 -  .NumberOfNodes
 %                 -  .NumberOfEdges
-%                 -  .speed - conduction speed (for time delays in the 
-%                             future) in mm/ms or m/s.
 %                 -  .dx  
 %                 -  .NodeStr - A cell array containing strings for 
 %                               labelling each region in the matrix.
@@ -63,7 +61,6 @@ function Connectivity = getConnectivity(Connectivity)
 %                                      regions, in micrometers.
 %                 -  .wireDistances - Matrix of pairwise Euclidean
 %                                     distance.
-%                 -  .delay - Matrix of time delays between regions.
 %
 %                 For Fields added only when .WhichMatrix='nanoWires',
 %                 see below.
@@ -166,247 +163,6 @@ clc
             Connectivity.NumberOfNodes  = size(Connectivity.weights,1);
 
 
-    %---------------------------------------------------------------------%  
-        case 'randAdjMat' 
-            temp = rand(Connectivity.NumberOfNodes) < ...
-                   Connectivity.AverageDegree/Connectivity.NumberOfNodes;
-            temp = tril(temp,-1);
-            adjMat = temp + temp';
-
-            % No empty lines:
-            for i=find(sum(adjMat)==0)
-                next = mod(i,Connectivity.NumberOfNodes)+1;
-                adjMat(i,next) = 1;
-                adjMat(next,i) = 1;
-            end
-
-            % One connected component:
-            [F,~] = spanforest(adjMat);
-            if length(F) == 1
-                disp('Graph happened to be connected.');
-            else
-                disp('Graph happened NOT to be connected. Connecting...');
-
-                F{end+1} = F {1};
-                for i = 1 : length(F)-1
-                    prevTree = F{i};
-                    currTree = F{i+1};
-
-                    prevVertex = find(sum(prevTree),1);
-                    currVertex = find(sum(currTree),1);
-
-                    adjMat(prevVertex,currVertex)=1;
-                    adjMat(currVertex,prevVertex)=1;
-                end
-
-                [F,~] = spanforest(adjMat);
-                if length(F)==1
-                    disp('Success!');
-                else
-                    disp('Failure!');
-                end
-            end
-
-            Connectivity.weights = adjMat;
-
-    %---------------------------------------------------------------------%  
-
-        case 'NearestNeighbour'
-            Connectivity.weights = diag(ones(1,Connectivity.NumberOfNodes-1),1);
-            Connectivity.weights = Connectivity.weights + diag(ones(1,Connectivity.NumberOfNodes-1),-1);
-            Connectivity.weights(1,end) = 1;
-            Connectivity.weights(end,1) = 1;
-
-    %---------------------------------------------------------------------%  
-
-    case 'Lattice'
-        if ~isfield(Connectivity, 'sizex')
-            Connectivity.sizex = 10;
-        end
-
-        if ~isfield(Connectivity, 'sizey')
-            Connectivity.sizey = Connectivity.sizex;
-        end            
-
-        if ~isfield(Connectivity, 'BondProb') %bond probability
-            Connectivity.BondProb = 1;
-        end
-
-        if ~isfield(Connectivity, 'RewireProb') %bond probability
-            Connectivity.RewireProb = 0;
-        end          
-
-        Connectivity.NumberOfNodes = Connectivity.sizex*Connectivity.sizey;
-        
-        Connectivity.weights = DilutedLattice(Connectivity.sizex, Connectivity.sizey, Connectivity.BondProb, Connectivity.RewireProb, Connectivity.seed);
-        
-%         nds = 0:(Connectivity.NumberOfNodes - 1);
-%         Connectivity.VertexPosition = 1 +  [floor(nds/sizex); mod(nds, sizex)].';              
-    %---------------------------------------------------------------------%  
-
-        case 'WattsStrogatz'
-            
-            if ~isfield(Connectivity, 'beta') 
-                Connectivity.beta = 0.0;
-            end
-            
-            if ~isfield(Connectivity, 'EdgesPerNode') 
-                Connectivity.EdgesPerNode = 2;
-            end
-            
-              Connectivity.weights = WattsStrogatz(Connectivity.NumberOfNodes, Connectivity.EdgesPerNode, Connectivity.beta, Connectivity.seed);
-    
-    %---------------------------------------------------------------------%  
-
-        case 'BarabasiAlbert'
-            if ~isfield(Connectivity, 'm0') 
-                Connectivity.m0 = 2;
-            end
-            
-            if ~isfield(Connectivity, 'm') 
-                Connectivity.mm = 2;
-            end            
-    
-            Connectivity.weights = genScaleFree(Connectivity.NumberOfNodes, Connectivity.m0, Connectivity.m, Connectivity.seed);
-    %---------------------------------------------------------------------%  
-    
-        case 'Random'
-            if strcmp(Connectivity.WeightType, 'binary')
-                Connectivity.weights  = (randi([0, 1], Connectivity.NumberOfNodes, Connectivity.NumberOfNodes)).*(~ eye(Connectivity.NumberOfNodes));
-            else
-               Connectivity.weights  = (rand(Connectivity.NumberOfNodes)).*(~ eye(Connectivity.NumberOfNodes));
-            end
-
-            if Connectivity.Symmetric
-                temp = tril(Connectivity.weights,-1);
-                Connectivity.weights = temp + temp.';
-            end
-
-    %---------------------------------------------------------------------%  
-
-        % This network is intended for debugging purposes
-        % 1         3         2         6  
-        % o--\/\/\--o--\/\/\--o--\/\/\--o
-        % |         4                   |  
-        % | _\/\/\_ o _\/\/\-------------
-        % |         5                   |
-        % | _\/\/\_ o _\/\/\-------------
-
-
-        case 'TestCase' 
-            Connectivity.weights = [0,0,1,1,1,0;
-                                    0,0,1,0,0,1;
-                                    1,1,0,0,0,0;
-                                    1,0,0,0,0,1;
-                                    1,0,0,0,0,1;
-                                    0,1,0,1,1,0];
-            Connectivity.NumberOfNodes = 6;
-    %---------------------------------------------------------------------%  
-
-    % This network is intended for debugging purposes
-        % o--\/\/\--o--\/\/\--o--\/\/\--o--\/\/\--o--\/\/\--o
-        % 1         2         3         4         5         6
-
-        case 'TestLinear'
-            Connectivity.NumberOfNodes = 6;
-            Connectivity.weights = diag(ones(Connectivity.NumberOfNodes-1, 1), 1) + ...
-                                   diag(ones(Connectivity.NumberOfNodes-1, 1), -1); 
-
-    %---------------------------------------------------------------------%  
-
-        % This network is intended for debugging purposes
-        % o--\/\/\--o--\/\/\--o
-        % 1         2         3 
-
-        case 'TestSeries'
-            Connectivity.NumberOfNodes = 3;
-            Connectivity.weights = [0 1 0;
-                                    1 0 1;
-                                    0 1 0];
-
-    %---------------------------------------------------------------------%  
-
-        % This network is intended for debugging purposes
-        %               3         4
-        %     |--\/\/\--o--\/\/\--o--\/\/\--|
-        %  1--o                             o--2
-        %     |--\/\/\--o--\/\/\--o--\/\/\--|
-        %               5         6
-
-        case 'TestParallel'
-            Connectivity.NumberOfNodes = 6;
-            Connectivity.weights = [0 0 1 0 1 0;
-                                    0 0 0 1 0 1;
-                                    1 0 0 1 0 0;
-                                    0 1 1 0 0 0;
-                                    1 0 0 0 0 1
-                                    0 1 0 0 1 0];
-                
-    %---------------------------------------------------------------------%  
-
-        % This network is intended for debugging purposes
-        % o--\/\/\--o--\/\/\--o--\/\/\--o--\/\/\--o--\/\/\--o--\/\/\--o
-        % 1         2         3         4         5         6         1
-
-        case 'TestCircular'
-            Connectivity.NumberOfNodes = 6;
-            Connectivity.weights = diag(ones(Connectivity.NumberOfNodes-1, 1),  1) + ...
-                                   diag(ones(Connectivity.NumberOfNodes-1, 1), -1); 
-            Connectivity.weights(1, end)   = 1;
-            Connectivity.weights(end, 1)   = 1;
-
-    %---------------------------------------------------------------------%  
-
-        % This network is intended for debugging purposes
-        % 1         2
-        % o--\/\/\--o
-        % | \       |
-        % \  \      /
-        % /   -     \
-        % \    -    /
-        % /       \ \
-        % |        \|
-        % o--\/\/\--o
-        % 3         4
-
-        case 'TestSquare'
-            Connectivity.NumberOfNodes = 4;
-            temp = zeros(Connectivity.NumberOfNodes);
-            temp(1  ,2:end) = 1;
-            temp(2:3,  end) = 1;
-            Connectivity.weights = temp + temp';
-
-    %---------------------------------------------------------------------%  
-
-        % This network is intended for debugging purposes
-        % 1         2         3
-        % o--\/\/\--o--\/\/\--o 
-        % |         |         |
-        % <         <         <
-        % >         >         >
-        % <         <         <
-        % |4        |5        |6
-        % o--\/\/\--o--\/\/\--o 
-        % |         |         |
-        % <         <         <
-        % >         >         >
-        % <         <         <
-        % |         |         |
-        % o--\/\/\--o--\/\/\--o 
-        % 7         8         9
-
-        case 'TestRectangular'
-            Connectivity.NumberOfNodes = 9;
-            temp_vec = [1 1 0 1 1 0 1 1];
-            temp = diag(ones(Connectivity.NumberOfNodes-3, 1), 3) + diag(temp_vec, 1);
-            Connectivity.weights = temp + temp';
-            
-        case 'Minimal'
-            Connectivity.NumberOfNodes = 2;          
-            Connectivity.weights = [0 1; 1 0];
-
-    %---------------------------------------------------------------------%  
-
     end
     
     %add new nodes
@@ -461,13 +217,6 @@ clc
     
     Connectivity.NumberOfEdges = size(Connectivity.EdgeList, 2);
  
-    if ~isfield(Connectivity,'speed')
-        Connectivity.speed = 1.0; 
-    end
-    
-    if ~isfield(Connectivity,'dx')
-        Connectivity.dx = 1.0; 
-    end
     
     if ~isfield(Connectivity,'NodeStr')
     % Generate nodes labels

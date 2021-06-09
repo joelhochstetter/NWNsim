@@ -1,10 +1,15 @@
 function sim = importSim(Components, Stimulus, T, num, saveFolder, nameComment, importSwitch, importStateOnly)
-    %same params struct as used for multiRun
-    %need to give stimulus and values for all components free paramaters +
-    %component type
-    %num is number at end of the filename. -1 input is for no number
-    %importSwitch = false then only imports network data when saving in hdf file
-    %format
+%same params struct as used for multiRun
+%need to give stimulus and values for all components free paramaters +
+%component type
+%num is number at end of the filename. -1 input is for no number
+%importSwitch = false then only imports network data when saving in hdf file
+%format
+%
+%
+%
+% Written by Joel Hochstetter
+    
     
     if nargin == 6
        importSwitch = true; 
@@ -20,18 +25,8 @@ function sim = importSim(Components, Stimulus, T, num, saveFolder, nameComment, 
     switch(Components.ComponentType)
         case 'atomicSwitch' 
             swType = 'a'; 
-        case 'memristor'
-            swType = 'm';
-        case 'tunnelSwitch'
-            swType = 't';
-        case 'quantCSwitch'
-            swType = 'q';
-        case 'tunnelSwitch2'
-            swType = 't2';    
         case 'tunnelSwitchL'
-            swType = 'tl';            
-        case 'linearSwitch'
-            swType = 'l';               
+            swType = 'tl';                      
     end
     
     switch Stimulus.BiasType

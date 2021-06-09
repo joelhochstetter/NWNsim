@@ -1,9 +1,26 @@
 function [Connectivity, ContactNodes, SDpath, src, drn] = addRectElectrode(Connectivity, fraction, xFraction)
 %{
+    Adds rectangular electrodes. Each node lying within the area of
+    electrode takes the voltage of electrode.
+    
     Inputs:
         Connectivity, SimulationOptions
         SDpath: is the number of junctions between source and drain not. If
         treading electrode as resistive switch then add 2 to this number
+        fraction: fraction of network in y-direction that each electrode covers
+       xFraction: fraction of network in x-direction that each electrode covers
+
+    Outputs:
+        Connectivity: updated version of connectivity struct
+        ContactNodes: The new electrodes
+              SDpath: Closest source-drain path (nunber of junctions
+                between electrode
+                 src: list of nodes which are sources
+                 drn: list of nodes which are drains
+
+
+    Written by Joel Hochstetter
+
 %}
 
         if nargin < 3

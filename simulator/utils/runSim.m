@@ -3,8 +3,8 @@ function [ sim ] = runSim(SimulationOptions,  Stimulus, Components, Connectivity
 % Runs a simulation of the network for given parameters and saves the
 % output to a file. Uses default parameters if none are given
 %
-% Based on MonolithicDemo.m this routine also allows entry of paramaters as
-% an array in which case the simulation is performed for that set of
+% Tthis routine also allows entry of paramaters as
+% a struct in which case the simulation is performed for that set of
 % paramaters
 % Here I denote default parameters with D in front of the paramater
 %
@@ -95,17 +95,11 @@ function [ sim ] = runSim(SimulationOptions,  Stimulus, Components, Connectivity
     DSimulationOptions.saveFolder      = '.';    %by default saves in current folder
     DSimulationOptions.useWorkspace    = true; %returns all variables in workspace
     DSimulationOptions.nameComment     = '';
-    DSimulationOptions.useLong         = false;
     DSimulationOptions.lyapunovSim     = false;
-    DSimulationOptions.useUncorrelated = false;        
-    DSimulationOptions.useRK4          = false;
-    DSimulationOptions.perturb         = false;
     DSimulationOptions.saveSwitches    = true;    %false => saves no switch data except final filament states
     DSimulationOptions.saveFilStateOnly = false;
     DSimulationOptions.saveEventsOnly  = false; %saves events if not saving filament state        
     DSimulationOptions.numOfElectrodes = 2;
-    DSimulationOptions.oneSrcMultiDrn  = false;
-    DSimulationOptions.MultiSrcOneDrn  = false; 
     DSimulationOptions.stopIfDupName = false; %this parameter only runs simulation if the savename is not used.
     DSimulationOptions.reserveFilename = false; %this saves an empty mat file 
     DSimulationOptions.megaLiteSave = false; %Does not save current or time-vector to save memory in the save file
@@ -138,16 +132,12 @@ function [ sim ] = runSim(SimulationOptions,  Stimulus, Components, Connectivity
     switch DConnectivity.WhichMatrix
         case 'nanoWires'
             DConnectivity.filename = '2016-09-08-155153_asn_nw_00100_nj_00261_seed_042_avl_100.00_disp_10.00.mat';
-            %Connectivity.filename = '2016-09-08-155044_asn_nw_00700_nj_14533_seed_042_avl_100.00_disp_10.00.mat';
-        case 'randAdjMat'
-            DConnectivity.NumberOfNodes = 30;
-            DConnectivity.AverageDegree = 10;
     end
 
 
 
     %% Initialize dynamic components
-    DComponents.ComponentType       = 'atomicSwitch'; % 'atomicSwitch' \ 'memristor' \ 'resistor', \'tunnelSwitch'
+    DComponents.ComponentType       = 'atomicSwitch'; % 'tunnelSwitchL' / 'atomicSwitch'
     %other defaults for component params are specified in initializeComponents.m
 
     %% Initialize stimulus:
@@ -225,16 +215,6 @@ function [ sim ] = runSim(SimulationOptions,  Stimulus, Components, Connectivity
     
     Stimulus  = getStimulus(Stimulus, SimulationOptions);
     
-    %For runge Kutta we get the stimulus with half the time-step
-    if SimulationOptions.useRK4 %RK4
-        SOpt2 = SimulationOptions;
-        SOpt2.dt = SimulationOptions.dt/2;
-        
-        % For RK4 implementation I use t = 0 as 1 and t=dt/2 as 2, etc.
-        
-        Stimulus2 = getStimulus(Stimulus, SOpt2, true);
-    end
-    
     %% Choose Contacts and Connectivity:    
     Connectivity = getConnectivity(Connectivity);
     if SimulationOptions.RectElectrodes
@@ -260,53 +240,41 @@ function [ sim ] = runSim(SimulationOptions,  Stimulus, Components, Connectivity
     
     %% Get Equations / Components:
     
-    if SimulationOptions.useRK4
 
-        SimulationOptions.numOfElectrodes = 2;
+    if SimulationOptions.numOfElectrodes == 2
         Signals = cell(SimulationOptions.numOfElectrodes,1);
-        
-        % For RK4 implementation I use t = 0 as 1 and t=dt/2 as 2, etc.
-        
-        Signals{1} = Stimulus2.Signal;
 
-        Signals{2} = zeros(2*SimulationOptions.NumberOfIterations + 1,1);
-        
-    else
-        if SimulationOptions.numOfElectrodes == 2
-            Signals = cell(SimulationOptions.numOfElectrodes,1);
+        Signals{1} = Stimulus.Signal;
 
-            Signals{1} = Stimulus.Signal;
+        Signals{2} = zeros(SimulationOptions.NumberOfIterations,1);
 
-            Signals{2} = zeros(SimulationOptions.NumberOfIterations,1);
-        
-        elseif SimulationOptions.oneSrcMultiDrn %single source multiple drains
-            %First electrode in contacts is source. Rest are drains
-            Signals = cell(SimulationOptions.numOfElectrodes,1);
+    elseif SimulationOptions.oneSrcMultiDrn %single source multiple drains
+        %First electrode in contacts is source. Rest are drains
+        Signals = cell(SimulationOptions.numOfElectrodes,1);
 
-            Signals{1} = Stimulus.Signal;
-            
-            for i = 2:SimulationOptions.numOfElectrodes
-                Signals{i} = zeros(SimulationOptions.NumberOfIterations,1);
-            end
-        
-        elseif SimulationOptions.MultiSrcOneDrn %single source multiple drains
-            %First electrode in contacts is source. Rest are drains
-            Signals = cell(SimulationOptions.numOfElectrodes,1);
+        Signals{1} = Stimulus.Signal;
 
-            Signals{SimulationOptions.numOfElectrodes} = zeros(SimulationOptions.NumberOfIterations,1);
-            
-            for i = 1:SimulationOptions.numOfElectrodes - 1
-                Signals{i} = Stimulus.Signal;
-            end
+        for i = 2:SimulationOptions.numOfElectrodes
+            Signals{i} = zeros(SimulationOptions.NumberOfIterations,1);
+        end
 
-        else %Multi-source, multi-drain
-            Signals = cell(SimulationOptions.numOfElectrodes, 1);            
-            for i = 1:SimulationOptions.numOfElectrodes
-                Signals{i} = Stimulus.Signal(:,i);
-            end            
-        end 
+    elseif SimulationOptions.MultiSrcOneDrn %single source multiple drains
+        %First electrode in contacts is source. Rest are drains
+        Signals = cell(SimulationOptions.numOfElectrodes,1);
 
-    end
+        Signals{SimulationOptions.numOfElectrodes} = zeros(SimulationOptions.NumberOfIterations,1);
+
+        for i = 1:SimulationOptions.numOfElectrodes - 1
+            Signals{i} = Stimulus.Signal;
+        end
+
+    else %Multi-source, multi-drain
+        Signals = cell(SimulationOptions.numOfElectrodes, 1);            
+        for i = 1:SimulationOptions.numOfElectrodes
+            Signals{i} = Stimulus.Signal(:,i);
+        end            
+    end 
+
     SimulationOptions.electrodes      = SimulationOptions.ContactNodes;
     Components = initializeComponents(Connectivity.NumberOfEdges,Components);    
     
@@ -340,18 +308,10 @@ function [ sim ] = runSim(SimulationOptions,  Stimulus, Components, Connectivity
     if SimulationOptions.takingSnapshots
         [Output, SimulationOptions, snapshots] = simulateNetwork(Connectivity, Components, Signals, SimulationOptions, snapshotsIdx); % (Ohm)              
     else % this discards the snaphots
-        if SimulationOptions.useLong 
-            [Output, SimulationOptions] = longSimulateNetwork(Connectivity, Components, Signals, SimulationOptions);  % (Ohm)   
-        elseif SimulationOptions.lyapunovSim
+        if SimulationOptions.lyapunovSim
             [Output, SimulationOptions] = simulateNetworkLyapunov(Connectivity, Components, Signals, SimulationOptions); % (Ohm)
-        elseif SimulationOptions.perturb
-            [Output, SimulationOptions] = simulateNetworkPerturb(Connectivity, Components, Signals, SimulationOptions); % (Ohm)
-        elseif SimulationOptions.useRK4
-            [Output, SimulationOptions] = simulateNetworkRK4(Connectivity, Components, Signals, SimulationOptions); % (Ohm)
         elseif ~SimulationOptions.saveSwitches
-            [Output, SimulationOptions] = simulateNetworkLite(Connectivity, Components, Signals, SimulationOptions); % (Ohm)       
-        elseif SimulationOptions.useUncorrelated
-            [Output, SimulationOptions] = simulateNetworkUncorrelated(Connectivity, Components, Signals, SimulationOptions); % (Ohm)                               
+            [Output, SimulationOptions] = simulateNetworkLite(Connectivity, Components, Signals, SimulationOptions); % (Ohm)   
         else
             [Output, SimulationOptions] = simulateNetwork(Connectivity, Components, Signals, SimulationOptions); % (Ohm)
         end       

@@ -11,8 +11,9 @@ function [sims] = multiRun(params)
 %Generalise so works for generic Struct names
 %Write exceptions such as setting initial filamentState, etc.
 
-%Parallisation:
 %
+%
+% Written by Joel Hochstetter
 
     %Generate save name before we run
         
@@ -22,7 +23,6 @@ function [sims] = multiRun(params)
         params.SimOpt = struct();
     end
     
-    %M = 10;
     runs = multify(params);
     if ~isfield(params.SimOpt, 'runIndex') || (params.SimOpt.runIndex < 0)
         sims = cell(1,numel(runs));

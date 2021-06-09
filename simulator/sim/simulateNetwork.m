@@ -69,8 +69,6 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
     junctionVoltage    = zeros(niterations, E);
     junctionConductance = zeros(niterations, E);
     junctionFilament   = zeros(niterations, E);
-    %condition          = zeros(niterations, 1);
-
     
     %% If snapshots are requested, allocate memory for them:
     if ~isempty(varargin)
@@ -96,8 +94,6 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
         % Get LHS (matrix) and RHS (vector) of equation:
         Gmat = zeros(V,V);
         
-%          Gmat(edgeList(:,1),edgeList(:,2)) = componentConductance;
-%          Gmat(edgeList(:,2),edgeList(:,1)) = componentConductance;
         
         for i = 1:E
             Gmat(edgeList(i,1),edgeList(i,2)) = componentConductance(i);
@@ -167,8 +163,5 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
     % Calculate network conductance and save:
     OutputDynamics.networkCurrent    = electrodeCurrent(:, 2:end);
     OutputDynamics.networkConductance = abs(OutputDynamics.networkCurrent(:,end) ./ Signals{1});
-
-    %OutputDynamics.condition = condition;
-    %figure;plot(condition);
     
 end

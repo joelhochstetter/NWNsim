@@ -11,6 +11,9 @@ function [sims] = multiImport (params)
 %params.importByName = 'String' where string is the name of the file. Do
 %not include '.mat'. E.g. params.importByName =
 %'t_T1000_AC3V_f0.5Hz_s0.01_r0.001_c0.1_m0.15_b1_p10_eps1e-05_i257' 
+%
+%
+% Written by Joel Hochstetter
 
     if isfield(params, 'SimOpt') == 0
         params.SimOpt = struct();

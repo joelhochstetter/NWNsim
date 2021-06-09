@@ -1,22 +1,24 @@
 %% Run simulations varying V 
 %% Vsweep with Initial state of all junctions 0
+T = 1000; %set simulation time
 uninitFolder = 'uninit'; %folder for uninitialised network
 %make sure these simulations are only sims saved in uninitFolder
 %extra datapoints specified near transition
 Amps =  unique(sort([0.010:0.005:0.080, 0.09003:0.00001:0.09004, 0.09006:0.00001:0.09009, 0.085:0.0005:0.1000, 0.101:0.001:0.149, 0.15:0.01:0.5, 0.55:0.05:3.0, 0.101:0.005:0.225]));
-DC_Vsweep(uninitFolder, Amps, 1000)
+DC_Vsweep(uninitFolder, Amps, T)
  
 
 %% Run pre-activated DC simulation at V = 1.8V for 10 sec
 saveFolder = '.'; %folder to save pre-initialisation of network
-DC_Vsweep(saveFolder, 1.8, 1.8, 1, 10);
+DC_Vsweep(saveFolder, 1.8, 10);
+
 
 %% Run Vsweep initial state from pre-activated network
 preinitFolder = 'preinit'; %folder for pre-initialised network
 %make sure these simulations are only sims saved in preinitFolder
 preFileName = 'tl_T10_DC1.8V_s0.01_r0.005_c0.01_m0.015_b10_p1.mat'; %name of sim file we pre-initalised to
 sort(unique([0.01:0.005:0.27, 0.041:0.001:0.044, 0.045:0.001:0.090]));
-DC_Vsweep(preinitFolder, Amps, 1000, -1, preFileName, saveFolder)
+DC_Vsweep(preinitFolder, Amps, T, -1, preFileName, saveFolder)
 
 
 %% Import simulations
@@ -46,7 +48,7 @@ end
 
 
 %% Plot Fig 2a
-timeVec = 1e-3:1e-3:1000;
+timeVec = 1e-3:1e-3:T;
 
 idx = zeros(9,1);
 idx(1) = find(Vlist >= 0.09*0.7,1);

@@ -1,9 +1,7 @@
 function [OutputDynamics, SimulationOptions] = simulateNetworkLite(Connectivity, Components, Signals, SimulationOptions, varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Saves no switch data
-% Simulate network at each time step. Mostly the same as Ido's code.
-% Improved the simulation efficiency by change using nodal analysis.
-% Enabled multi-electrodes at the same time.
+% Sames as simulateNetworkLite but does not save junction data. Optional to
+% save filament state and events (as defined by a threshold)
 %
 % Left the API of snapshots. For later usage of visualize the network.
 % ARGUMENTS: 

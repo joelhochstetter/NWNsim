@@ -70,20 +70,6 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%{
-    Example usage:
-        cd /import/silo2/joelh/Criticality/largeNetworks
-        load('a_T10_DC2V_s0.01_r0.001_c0.1_m0.15_b10_p1.mat')
-        Connectivity = struct('filename', sim.ConnectFile);
-        Connectivity = getConnectivity(Connectivity);
-        Components   = sim.Comp;
-        timeVec      = sim.dt:sim.dt:sim.T;
-        whatToPlot   = struct('Dissipation',  false, 'Lambda',  true, 'GraphRep', true);
-        axesLimits   = struct('LambdaCbar',[0; max(max(sim.swLam))]);
-        makeSnapshotMovie(sim.Stim.Signal, sim.netC, sim.swV, sim.swLam, ...
-            timeVec, sim.ContactNodes, sim.Comp, Connectivity, whatToPlot, axesLimits)
-%}
-
     %% Sets default values
     
     %By default additonal contacts are drains
@@ -183,11 +169,7 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
     if ~isfield(axesLimits, 'VoltageCbar')
       axesLimits.VoltageCbar = [min(absoluteVoltage), max(absoluteVoltage)];
     end
-
-    if ~isfield(axesLimits, 'LyCbar') && isfield(snapshot, 'Lyapunov')
-      axesLimits.VoltageCbar = [min(snapshot.Lyapunov), max(snapshot.Lyapunov)];
-    end    
-    
+   
     if ~isfield(axesLimits, 'LambdaCbar')
       axesLimits.LambdaCbar = [0, max(snapshot.filamentState(1:connectivity.NumberOfEdges))];
     end
@@ -200,9 +182,6 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
         %Set-up figure and colour
         snapshotFigure = figure('visible','off', 'color','w', 'units', 'centimeters', 'OuterPosition', [5 5 25 20]);
         set(gca,'Color', 0.4*[1 1 1],'xtick',[],'ytick',[]);
-%         set(0,'defaultAxesFontName', 'Times')
-%         set(0,'defaultTextFontName', 'Times')
-        %set(gca,'xtick',[],'ytick',[]);
         
         
         %Convert to graph rep
@@ -214,7 +193,7 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
         %G.Edges.Weight = full(snapshot.Voltage(1:connectivity.NumberOfEdges));
 
         hold all;
-        p = plot(G, 'XData', connectivity.VertexPosition(:,1), 'YData', connectivity.VertexPosition(:,2), 'LineStyle','-','LineWidth',4, 'MarkerSize',8)  
+        p = plot(G, 'XData', connectivity.VertexPosition(:,1), 'YData', connectivity.VertexPosition(:,2), 'LineStyle','-','LineWidth',4, 'MarkerSize',8);
 
         % Highlight on switches
             % Find the edges which correspond to OFF switches:
@@ -225,10 +204,7 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
             % Remove the edges which correspond to OFF switches:
         adjacencyMatrix(sub2ind(size(adjacencyMatrix),badPairs(1,:),badPairs(2,:))) = 0;
         adjacencyMatrix(sub2ind(size(adjacencyMatrix),badPairs(2,:),badPairs(1,:))) = 0;
-        %highlight(p, graph(adjacencyMatrix),'EdgeColor','w','LineWidth',3.5,'LineStyle','-')
 
-%         ax=plot(NaN,NaN,'b--',NaN,NaN,'w'); %plotting invisible points of desired colors
-        %legend(ax,'OFF switch','ON switch');        %adding the legend
         
 
         % Highlight a nanowire
@@ -302,9 +278,7 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
         sectionCentreY  = (p.YData(connectivity.EdgeList(1,:)) +  p.YData(connectivity.EdgeList(2,:)))/2 - sectionCurrentY/2; 
         
         if whatToPlot.Currents
-            %sectionCentreX(1)
             quiver(sectionCentreX,sectionCentreY,sectionCurrentX,sectionCurrentY,0,'Color','w','LineWidth',1.5);
-            %sectionCentreX(1)
         end
         
 
@@ -357,59 +331,7 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
             end
             cbar.FontSize = 15;
 
-        elseif whatToPlot.Lyapunov
-            colormap('parula');
-            p.EdgeCData = snapshot.Lyapunov(1:connectivity.NumberOfEdges);
-            colorbar
-            caxis(axesLimits.LyCbar);
-%             myColors = log10(abs(snapshot.Lyapunov(1:connectivity.NumberOfEdges)));
-%             upper = ceil(max(myColors));
-%             cRange = 4;
-%             myColors(highlightEdges) =upper - cRange;
-%             p.EdgeCData = myColors;
-%             caxis([upper - cRange, upper]);
-%             cbar  = colorbar; 
-%             for i = 2:numel(cbar.Ticks)
-%                 cbar.TickLabels{i} = num2str(10.^(cbar.Ticks(i)), '%10.1e');
-%             end
-%             cbar.TickLabels{1} = '';
-%             cbar.FontSize = 15;
-%             cbar.Label.String = 'l_j (s^{-1})';  
-%             
-%             shiftX = zeros(size(highlightEdges));
-%             shiftY = zeros(size(highlightEdges));
-%             shiftY(1) = -0.31;           
-%             shiftY(7) = -0.25;
-%             shiftX(7) = -0.23;
-%             shiftY(6) = 0.4;
-%             shiftX(4) = 0.20;
-%             shiftY(5) = 0.34;
-%             shiftX(5) = -0.06;
-%             shiftY(2) = 0.44;
-%             shiftY(3) = -0.35;
-%             shiftY(8) = -0.26;
-%             for i = 1:numel(highlightEdges)
-%                 text(sectionCentreX(highlightEdges(i)) + shiftX(i), sectionCentreY(highlightEdges(i)) + shiftY(i), num2str(i), 'FontSize', 25, 'Color', 'w')
-%             end
-%             cbar.FontSize = 11.5;
-
-            %upperLimit = 0.15;
-            %caxis([log10(axesLimits.ConCbar(1)/7.77e-5),round(log10(axesLimits.ConCbar(2)/7.77e-5))]);
-%             cbar.Label.String = 'Junction Conductance (units of G_0)';
-%             for i = 1:numel(cbar.Ticks)
-%                 cbar.TickLabels{i} = num2str(10.^(cbar.Ticks(i)), '%10.1e');
-%             end           
-%             cbar.TickLabels = string(10.^(cbar.Ticks));          
-%             colormap('parula');
-            
-             parula1 = parula(1000);
-%             parula1 = [[1 0 0]; parula1(10:end,:)];
-             parula1 = parula1(10:end,:);
-% 
-             colormap(parula1);
-        
-        
-        elseif whatToPlot.LogConductance
+          elseif whatToPlot.LogConductance
             % calculate power consumption:
 %             p.EdgeCData = log10(snapshot.Conductance(1:connectivity.NumberOfEdges)/7.77e-5);  
             p.EdgeCData = log10(snapshot.Conductance(1:connectivity.NumberOfEdges)/7.77e-5);          
@@ -494,23 +416,6 @@ function [snapshotFigure, p] = snapshotToFigurePaper(snapshot, contacts, connect
         
 
 
-        %Set title
-%        title(strcat(sprintf('t=%.2f (s), ', snapshot.Timestamp),' G=', sprintf('%.2e (S)',snapshot.netC),' V=', sprintf('%.2e (V)',snapshot.netV)), 'fontsize', 10);
-%         ax = gca;
-%         outerpos = ax.OuterPosition;
-%         ti = ax.TightInset; 
-%         left = outerpos(1) + ti(1);
-%         bottom = outerpos(2) + ti(2) + 0.01;
-%         ax_width = outerpos(3) - ti(1) - ti(3) - 0.06;
-%         ax_height = outerpos(4) - ti(2) - ti(4) - 0.02;
-%         ax.Position = [left bottom ax_width ax_height];
-%         ax.TitleFontSizeMultiplier = 3;
-%         %set(gcf, 'visible','on')
-       
-%         xl = xlim;
-%         yl = ylim;
-%         xlim([-4.0,4.3])
-%         ylim([-3.5,4.5])
         
         hold off;
         

@@ -1,9 +1,28 @@
 function [filename] = saveSim(Stimulus,SimulationOptions,Output,Components, Connectivity, filename, runID)
-    %saves dataset to a file as a struct
-    %assumes that component parameters are the same at all switches
+%{
+    saves dataset to a file as a struct
+    assumes that component parameters are the same at all switches
 
-    % save name is generated in genSaveName.m
-    
+    save name is generated in genSaveName.m
+  
+  
+    Inputs:
+        Stimulus, SimulationOptions, Output, Componenets, Connectivity:
+            structs as in other functions
+        filename: filename for which we request to save to. If this is used
+            a number will be appended to end
+           runID: a unique id for simulations. If multiple simulations with
+                identical parameters are started, only one will run if 
+                'SimulationOptions.stopIfDupName = true'
+
+    Outputs:
+        filename for which we save to as a '.mat' file
+
+
+    Written by Joel Hochstetter
+%}
+
+
     sim.Stim = Stimulus;
     %sim.Stim = rmfield(sim.Stim,'TimeAxis'); %does not same timevector as this would be double stored
     sim.netC = Output.networkConductance;
@@ -17,20 +36,8 @@ function [filename] = saveSim(Stimulus,SimulationOptions,Output,Components, Conn
     switch(Components.ComponentType)
         case 'atomicSwitch' 
             swType = 'a'; 
-        case 'memristor'
-            swType = 'm';
-        case 'tunnelSwitch'
-            swType = 't';
-        case 'quantCSwitch'
-            swType = 'q';
-        case 'tunnelSwitch2'
-            swType = 't2';    
         case 'tunnelSwitchL'
-            swType = 'tl';            
-        case 'linearSwitch'
-            swType = 'l';            
-        case 'brownModel'
-            swType = 'b';                 
+            swType = 'tl';                          
     end
     
     sim.T = SimulationOptions.T;
@@ -62,11 +69,7 @@ function [filename] = saveSim(Stimulus,SimulationOptions,Output,Components, Conn
     sim.Comp.onG = Components.onConductance(1);
     sim.Comp.offG = Components.offConductance(1);
     sim.Comp.swType = swType;
-    sim.Comp.nonpolar = Components.nonpolar;
     sim.Comp.stateEquation = Components.stateEquation;
-    sim.Comp.noiseType = Components.noiseType;
-    sim.Comp.noiseBeta = Components.noiseBeta;
-    sim.Comp.noiseLevel = Components.noiseLevel;
     
     %Save extra parameters if need be
     if isfield(SimulationOptions, 'misc')

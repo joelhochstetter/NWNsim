@@ -4,6 +4,9 @@ function outstring = strcat2(cellstrings, fmt)
     array. For numeric types applies num2str with given format (fmt).
     No format given behaves as default num2str
     Returns a character array outrstring
+
+
+    Written by Joel Hochstetter
 %}
     if nargin < 2
         fmt = -1;

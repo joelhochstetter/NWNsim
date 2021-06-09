@@ -16,13 +16,16 @@ function [runs] = multify (params)
 %For char array if '.mat' file then loads this file
 %Else tries to find a folder of the name entered and runs for all in file
 %For cell array all elements must be char arrays ending in '.mat' 
+%
+%
+% Written by Joel Hochstetter
 
 
-    %combs stores the possible combinations of parameters
-    %the row number corresponds to the variable number
-    %the field name for a given row number is stored in flds
-    %The struct to find each field in is given in fldType
-    %Each column corresponds to a different set of simulation paramaters
+%combs stores the possible combinations of parameters
+%the row number corresponds to the variable number
+%the field name for a given row number is stored in flds
+%The struct to find each field in is given in fldType
+%Each column corresponds to a different set of simulation paramaters
 
     SimOpt  = struct();
     Stim    = struct();
