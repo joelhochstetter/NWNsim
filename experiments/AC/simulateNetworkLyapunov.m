@@ -1,11 +1,7 @@
-function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connectivity, Components, Signals, SimulationOptions, varargin)
+function [OutputDynamics, SimulationOptions] = simulateNetworkLyapunov(Connectivity, Components, Signals, SimulationOptions, varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Modifies simulate network to perform lyapunov exponent calculation
 %
-% Simulate network at each time step. Mostly the same as Ido's code.
-% Improved the simulation efficiency by change using nodal analysis.
-% Enabled multi-electrodes at the same time.
-%
-% Left the API of snapshots. For later usage of visualize the network.
 % ARGUMENTS: 
 % Connectivity - The Connectivity information of the network. Most
 %                importantly the edge list, which shows the connectivity
@@ -36,18 +32,8 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
 % updateComponentConductance
 % updateComponentState
 %
-% USAGE:
-%{
-    Connectivity = getConnectivity(Connectivity);
-    contact      = [1,2];
-    Equations    = getEquations(Connectivity,contact);
-    Components   = initializeComponents(Connectivity.NumberOfEdges,Components)
-    Stimulus     = getStimulus(Stimulus);
-    
-    OutputDynamics = runSimulation(Equations, Components, Stimulus);
-%}
-%
 % Authors:
+% Joel Hochstetter
 % Ido Marcus
 % Paula Sanz-Leon
 % Ruomin Zhu
@@ -64,23 +50,19 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
     RHS             = zeros(V+numOfElectrodes,1); % the first E entries in the RHS vector.
     LHSinit         = zeros(V+numOfElectrodes, V+numOfElectrodes);
         
-    wireVoltage        = zeros(niterations, V);
     electrodeCurrent   = zeros(niterations, numOfElectrodes);
-    junctionVoltage    = zeros(niterations, E);
-    junctionConductance = zeros(niterations, E);
-    junctionFilament   = zeros(niterations, E);
-    
-    %% If snapshots are requested, allocate memory for them:
-    if ~isempty(varargin)
-        snapshots           = cell(size(varargin{1}));
-        snapshots_idx       = sort(varargin{1}); 
-    else
-        nsnapshots          = 10;
-        snapshots           = cell(nsnapshots,1);
-        snapshots_idx       = ceil(logspace(log10(1), log10(niterations), nsnapshots));
+
+    if SimulationOptions.saveSwitches    
+        wireVoltage        = zeros(niterations, V);
+        junctionVoltage    = zeros(niterations, E);
+        junctionConductance = zeros(niterations, E);
+        junctionFilament   = zeros(niterations, E);
     end
-    kk = 1; % Counter    
+  
+    %Calculate the unperturbed orbit
+    unpertFilState        = SimulationOptions.unpertFilState';
     
+    LyapunovMax        = zeros(niterations,1); %exponential divergence at each time-step
     
     %% Solve equation systems for every time step and update:
     for ii = 1 : niterations
@@ -90,17 +72,14 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
         componentConductance = compPtr.comp.conductance;
         
         % Get LHS (matrix) and RHS (vector) of equation:
-        Gmat = zeros(V,V);
-        
-        
-        for i = 1:E
-            Gmat(edgeList(i,1),edgeList(i,2)) = componentConductance(i);
-            Gmat(edgeList(i,2),edgeList(i,1)) = componentConductance(i);
-        end
+        Gmat = zeros(V);
+
+         for i = 1:E
+             Gmat(edgeList(i,1),edgeList(i,2)) = componentConductance(i);
+             Gmat(edgeList(i,2),edgeList(i,1)) = componentConductance(i);
+         end
         
         Gmat = diag(sum(Gmat, 1)) - Gmat;
-        
-        
         
         LHS          = LHSinit;
         
@@ -112,54 +91,65 @@ function [OutputDynamics, SimulationOptions, snapshots] = simulateNetwork(Connec
             LHS(this_elec,V+i)  = 1;
             RHS(V+i)            = Signals{i,1}(ii);
         end
-        
-        %condition(ii) = cond(LHS);
-
         % Solve equation:
-        if Connectivity.SingleComponent
-            sol = LHS\RHS;
-        else
-            sol = pinv(LHS)*RHS;
-        end
-
+        sol = LHS\RHS;
+        
+        %calculate junction voltages
         tempWireV = sol(1:V);
         compPtr.comp.voltage = tempWireV(edgeList(:,1)) - tempWireV(edgeList(:,2));
         
+        
         % Update element fields:
-        updateComponentState(compPtr, SimulationOptions.dt);    % ZK: changed to allow retrieval of local values
+        updateComponentState(compPtr, SimulationOptions.dt);    
         
-        wireVoltage(ii,:)        = sol(1:V);
-        electrodeCurrent(ii,:)   = sol(V+1:end);
-        junctionVoltage(ii,:)    = compPtr.comp.voltage;
-        junctionConductance(ii,:) = compPtr.comp.conductance;
-        junctionFilament(ii,:)   = compPtr.comp.filamentState;
-        
-
-        if find(snapshots_idx == ii) 
-            frame.Timestamp  = SimulationOptions.TimeVector(ii);
-            frame.Voltage    = compPtr.comp.voltage;
-            frame.Conductance = compPtr.comp.conductance;
-            frame.OnOrOff    = compPtr.comp.OnOrOff;
-            frame.filamentState = compPtr.comp.filamentState;
-            frame.netV = Signals{1}(ii);
-            frame.netI = electrodeCurrent(ii, 2);
-            frame.netC = frame.netI/frame.netV;
-            snapshots{kk} = frame;
-            kk = kk + 1;
+        %Calculate state difference
+        deltaLam     = compPtr.comp.filamentState - unpertFilState(:,ii);
+        normDeltaLam = norm(deltaLam);
+        if normDeltaLam == 0 %if perturbation disappears then either perturbation is too small or time-step is too big
+            LyapunovMax(ii) = -inf;
+            break
         end
         
+        %Update trajectory
+        compPtr.comp.filamentState =  unpertFilState(:,ii) + SimulationOptions.LyEps/normDeltaLam*deltaLam;
+        
+        %Calculate exponential divergence for time-step
+        LyapunovMax(ii) = log(normDeltaLam/SimulationOptions.LyEps);
+        
+        %Calculate network current
+        electrodeCurrent(ii,:)   = sol(V+1:end);
+
+        if SimulationOptions.saveSwitches
+            wireVoltage(ii,:)        = sol(1:V);
+            junctionVoltage(ii,:)    = compPtr.comp.voltage;
+            junctionConductance(ii,:) = compPtr.comp.conductance;
+            junctionFilament(ii,:)   = compPtr.comp.filamentState;
+        end
     end
     
-    % Calculate network conductance and save:
-    OutputDynamics.electrodeCurrent   = electrodeCurrent;
-    OutputDynamics.wireVoltage        = wireVoltage;
-    
-    OutputDynamics.storevoltage       = junctionVoltage;
-    OutputDynamics.storeCon           = junctionConductance;
-    OutputDynamics.lambda             = junctionFilament;
+    if ~SimulationOptions.saveSwitches
+        % Calculate network conductance and save:
+        OutputDynamics.electrodeCurrent   = electrodeCurrent;
+        OutputDynamics.wireVoltage        = sol(1:V)';
+
+        OutputDynamics.storevoltage       = compPtr.comp.voltage';
+        OutputDynamics.storeCon           = compPtr.comp.conductance';
+        OutputDynamics.lambda             =  compPtr.comp.filamentState';
+    else
+        % Calculate network conductance and save:
+        OutputDynamics.electrodeCurrent   = electrodeCurrent;
+        OutputDynamics.wireVoltage        = wireVoltage;
+
+        OutputDynamics.storevoltage       = junctionVoltage;
+        OutputDynamics.storeCon           = junctionConductance;
+        OutputDynamics.lambda             = junctionFilament;
+    end
 
     % Calculate network conductance and save:
-    OutputDynamics.networkCurrent    = electrodeCurrent(:, 2:end);
-    OutputDynamics.networkConductance = abs(OutputDynamics.networkCurrent(:,end) ./ Signals{1});
+    OutputDynamics.networkCurrent    = electrodeCurrent(:, 2);
+    OutputDynamics.networkConductance = abs(OutputDynamics.networkCurrent ./ Signals{1});
+
+    %Save exponential divergences
+    OutputDynamics.LyapunovMax       = LyapunovMax/SimulationOptions.dt; %normalise by step size
     
 end

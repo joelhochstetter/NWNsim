@@ -17,7 +17,7 @@ params.Conn.filename = '2016-09-08-155153_asn_nw_00100_nj_00261_seed_042_avl_100
 
 %Set Components
 params.Comp.ComponentType  = 'tunnelSwitchL';
-params.Comp.onConductance  = 7.77e-8;
+params.Comp.onConductance  = 7.77e-5;
 params.Comp.offConductance  = 7.77e-8;
 params.Comp.setVoltage     = 1e-2;
 params.Comp.resetVoltage  = 5e-3;
@@ -55,7 +55,7 @@ figure;
 tend = 7.0;
 cmap = parula(10);
 
-G0 = sim.Comp.onR;
+G0 = sim.Comp.onG;
 
 %Ordered by activitation time
 ordAct = [1,2,9,3,4,5,8,7,6];
@@ -86,7 +86,6 @@ set(gca, 'YScale', 'log')
 ylim([0.8e-3,1.5])
 axis square;
 box on;
-print(gcf, 'junctionConductance.png', '-dpng', '-r300', '-painters')
 
 
 %% Plot Fig 3b (Voltage distribution)
@@ -95,19 +94,17 @@ timeVector = timeVec;
 figure('color','w', 'units', 'centimeters', 'OuterPosition', [5 5 18 18]);
 contourf(timeVector(1:1:end),1:9, abs(sim.swV(1:1:end,spE))'/1e-2)
 ylabel('Distance from source','fontweight','bold','fontsize',10);
-xlabel('t (s)','fontweight','bold','fontsize',10);
+xlabel('t (s)','fontsize',10);
 colormap(parula)
 hcb = colorbar;
 caxis([0,2.5])
-title(hcb,'V_{jn}^*', 'FontSize', 10, 'FontWeight', 'bold');
+title(hcb,'V_{jn}^*', 'FontSize', 10)
 hcb.FontSize = 10;
 hcb.FontWeight = 'bold';
-colormap inferno;
 xlim([0,5.5])
-set(gca,'YDir','normal')
+set(gca,'YDir','reverse')
 grid on;
 axis square
-print(gcf, 'junctionVoltage.png', '-dpng', '-r300', '-painters')
 
 
 %% Plot Figs 3c-e Creates snapshot from data - enter snapshots
@@ -147,7 +144,6 @@ for i = idx
     myfig = gcf;
     myfig.InvertHardcopy = 'off'; 
     strcat('snapshot_t',  num2str(timeVec(i), 1), 's.png')
-    print(myfig, strcat('snapshot_t',  num2str(timeVec(i), 2), 's.png'), '-dpng', '-r300', '-painters')
 end
 
 
@@ -162,4 +158,3 @@ title(cbar, 'G_{jn} (G_0)', 'FontSize', 10, 'FontWeight', 'bold');
 cbar.FontSize = 10;
 cbar.Ticks = [-3, -2.7, -2.3, -2, -1.7];
 cbar.TickLabels = {'1\times10^{-3}', '2\times 10^{-3}', '5\times 10^{-3}','1\times10^{-2}', '2\times10^{-2}'};
-print(gcf, 'colorbar.png', '-dpng', '-r300', '-painters')

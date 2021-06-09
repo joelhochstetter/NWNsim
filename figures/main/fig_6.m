@@ -1,26 +1,25 @@
 %% Run network under AC stimulus for long time to allow convergence to attractor
 %set-up parameters to run
 dt = 5e-4; %set time-step for simulations
-T = 3000; %Set simulation time: Must run an integer number of periods for all frequencies
+T  = 2000; %Set simulation time: Must run an integer number of periods for all frequencies
 Amps = [0.1, 0.2, 0.25, 0.3, 0.35, 0.4, 0.6, 0.8, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3]; %Specify stimulus amplitudes
 Freqs = [0.025, 0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.65, 0.75, 0.85, 1.0, 1.25, 1.5, 1.75, 2.0]; %Specify stimulus frequencies
-attractorFolder = '.'; %set save folder for attractor
-
+attractorFolder = 'attractors'; %set save folder for attractor
 runACAttractor(Amps, Freqs, dt, T, attractorFolder) % Run simulations for attractors
 
 
 
 %% Calculate Lyapunov exponents of attractor
 %set parameters for simulations
-eps = 5e-4; %size of infintesimal perturbation 
+eps   = 5e-4; %size of infintesimal perturbation 
 dt    = 5e-4; %size of simulation time-step
-T     = 100;
+T     = 200;
 
 files = dir(strcat(attractorFolder, '/*.mat')); %get attractor simulation files
 numA = numel(files); %number of attractor files
-lyFolder = '.'; %folder to save Lyapunov exponent simulations
+lyFolder = 'lyapunov'; %folder to save Lyapunov exponent simulations
 
-for i = 1:numA
+for i = numA
     calcLyapunov(attractorFolder, files(i).name, lyFolder, eps, dt, T)
 end
 
@@ -77,7 +76,7 @@ text((1-shift)*xrange(1) + shift*xrange(2) , shift*yrange(1) + (1-shift)*yrange(
 
 %% Calculate r (average ratio of on and off conductances)
 r = zeros(numA, 1);
-files = dir(strcat(lyFolder, '/t2*')); %get Lyapunov exponents simulations folders
+files = dir(strcat(lyFolder, '/tl*')); %get Lyapunov exponents simulations folders
 %need to ensure files only contains these folders otherwise will not work
 
 for i = 1:numel(files)
