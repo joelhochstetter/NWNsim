@@ -64,25 +64,12 @@ function [tau, dta, xmin, xmax, p, pcrit, ks, bins, prob, MLcompare] = plotAvala
     ks = 0.0;
     
     if fitP.logBin      
-%         nbins = ceil(2*iqr(sizeAv)/(numel(sizeAv)^(1/3))); %calculated by Freeman Diaconis rule
         [bins, N, edges] = LogBin(sizeAv);
     else 
         [N,edges] = histcounts(sizeAv, 'Normalization', 'probability');
         bins = (edges(1:end-1) + edges(2:end))/2;
     end    
-    
-    %Exclude bins which have too few events
-%     sizeAv = sort(sizeAv);
-%     upperCut = min(edges(N < fitP.minBinEvents));
-%     sizeAv(sizeAv >= upperCut) = [];
-
-    %% Extract region of distribution that is strictly decreasing
-%     [~, firstMin] = findpeaks(-N);
-%     firstMin = firstMin(1);
-%     if firstMin < numel(N)
-%         fitP.uc = edges(firstMin + 1);
-%     end
-    
+       
     %%
 
     loglog(bins, N, 'bx')
@@ -92,7 +79,6 @@ function [tau, dta, xmin, xmax, p, pcrit, ks, bins, prob, MLcompare] = plotAvala
         
         if fitP.useML
             if numel(unique(sizeAv(sizeAv <= fitP.uc))) > 2
-%                 fitP.uc = 100;
                 MLcompare = mlFit(sizeAv(sizeAv <= fitP.uc), fitP.fitTrun);
                 tau   = MLcompare.PL.tau;
                 xmin = MLcompare.PL.xmin;

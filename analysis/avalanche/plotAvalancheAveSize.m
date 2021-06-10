@@ -13,6 +13,16 @@ function [gamma_m_1, dgamma_m_1, mSize, mLife] = plotAvalancheAveSize(sizeAv, li
 
     Option to fit if we provide cut-offs
 
+
+    Outputs:
+        gamma_m_1: exponent to <S> ~ T^gamma obtained by linear fitting on
+                log-log plot
+       dgamma_m_1: uncertainty in gamma_m_1
+            mSize: average avalanche size for a given life-tims
+            mLife: life-times of valanches found
+
+    Written by Joel Hochstetter
+
 %}
     %gamma_m_1
     [mSize, mLife] = avalancheAvSize(sizeAv, lifeAv);

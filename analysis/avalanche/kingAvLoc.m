@@ -13,6 +13,9 @@ function kingLoc = kingAvLoc(x, N, c)
 
     Outputs:
         kingLoc: bin centre corresponding to kind avalanche
+
+
+    Written by Joel Hochstetter
 %}
 
     if nargin < 3

@@ -1,10 +1,30 @@
 function events =  findEvents(G, eventDetect)
-    defEvDet.method = 'hybrid';
+%{
+    Find events from conductance time-series vector. e.g. in experimental
+    data
+
+    Inputs
+              G: Conductance time-sreies
+    eventDetect: struct containing details of event detection with
+                    different methods
+
+    thresholdPeak method is used in paper
+
+    returns vector: events of same length as time-series
+
+
+    Written by Joel Hochstetter
+
+%}
+
+
+
+    defEvDet.method = 'thresholdPeak';
     defEvDet.window = 1;
     defEvDet.thresh = 5.0e-8; %threshold of form dG >= thr or dG./G >= thr
     defEvDet.k_std  = 0.0; %threshold of form dG >= k*std(dG) or dG./G = k*std(dG./G)
     defEvDet.k_mean = 0.0; %threshold of form dG >= k*mean(dG) or dG./G = k*mean(dG./G)
-    defEvDet.relThresh = 0.01;
+    defEvDet.relThresh = 0.05;
     defEvDet.noiseFloor = 5e-10;     
     
     fields = fieldnames(defEvDet);

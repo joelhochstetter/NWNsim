@@ -9,6 +9,8 @@ function seqs = binSequence(x, times, N)
     Outputs:
         seqs: cell of all elements of x at each time-point
 
+    Written by Joel Hochstetter
+
 %}
 
     assert(numel(times) == numel(x));

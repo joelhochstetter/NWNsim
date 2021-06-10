@@ -1,4 +1,4 @@
-%% Run experiments (as in Fig 5)
+%% Run simulations (as in Fig 5)
 
 
 %% Specify parameters

@@ -20,7 +20,8 @@ function [dur, size_t, time_t, numAv, sample, lifeAv] = avalancheShape(events, s
                               each event in the analysis
 
         numAv (Nx1 array) - stores number of avalanches of this length.
-       
+
+    Written by Joel Hochstetter       
 %}
 
     if nargin < 2

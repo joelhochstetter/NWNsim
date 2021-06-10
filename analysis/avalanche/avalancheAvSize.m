@@ -15,7 +15,8 @@ function [mSize, mLife] = avalancheAvSize(sizeAv, lifeAv)
     Output:
         mLife (Nx1 array) - life-times
         mSize (Nx1 array) - mean number of events for a given life-time
-       
+
+    Written by Joel Hochstetter       
 %}
     
     mLife = unique(lifeAv, 'sorted');

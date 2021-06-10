@@ -11,6 +11,8 @@ function [binned,  times,  binJoinPeriod] = binWithJoins(data, tStep, joinperiod
                 times: the central time-point for each bin
    binJoinPeriod: array of the join
 
+    Written by Joel Hochstetter
+
 %}
     
 

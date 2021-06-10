@@ -15,7 +15,7 @@ saveFolder = 'VaryVChangeInitState';
 Amps = 0.01*9*[0.5:0.025:3.0];
 %loop over initial conductance states
 for initCon = initCons 
-    DC_Vsweep(saveFolder, Amps, 1000, -1, 'tl_T10_DC1.8V_s0.01_r0.005_c0.01_m0.015_b2_p1.mat' , preActFolder, initCon);
+    DC_Vsweep(saveFolder, Amps, 1000, -1, 'tl_T10_DC1.8V_s0.01_r0.005_c0.01_m0.015_b10_p1.mat' , preActFolder, initCon);
 end
 
 

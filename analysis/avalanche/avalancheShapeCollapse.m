@@ -21,7 +21,9 @@ function [re_tm,re_sz, scale, acoeff, gamma] = avalancheShapeCollapse(dur, size_
                               time.
 
         scale (Nx1 cell) - stores the scale function
+
         
+    Written by Joel Hochstetter
 %}
 
     N = numel(dur);

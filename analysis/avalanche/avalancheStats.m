@@ -22,6 +22,8 @@ function [sizeAv, lifeAv, avTime, branchAv] = avalancheStats(events, t, joinperi
             blank frame before avalanche starts
      branchAv (Ax1 array) - (num events in time bin 2)/(num events in time bin 1)
        
+
+    Written by Joel Hochstetter
 %}
 
 

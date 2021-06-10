@@ -1,6 +1,20 @@
 function [invsignutau, errEst] = scaleCollapseWithErrors(binnedEvents, Tmax, minTime, minFreq, nBootstraps, sampleFraction, ncpu)
 %{
-    
+    Input: 
+  binnedEvents: events per bin after avlanches are temporally binned:
+        Tmax: maximum avalanche life-time considered
+     minTime: 
+     minFreq: 
+       ToPlot: plots output
+
+    Ouput:
+        Determines scale-collapse parameter gamma
+
+    Uses Marshall (2016) method to fitting scaling function
+
+    Written by Joel Hochstetter
+
+
 %}
 
     if nargin < 7

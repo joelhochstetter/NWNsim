@@ -20,6 +20,8 @@ function jointCritAnalysis(importFolder, saveFolder, importMode, eventDetect, fi
                 conditions.after  = true
                 conditions.thresh = 5e-6
 
+
+    Written by Joel Hochstetter
 %}         
 
 

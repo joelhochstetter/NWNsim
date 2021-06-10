@@ -1,5 +1,9 @@
 function sf =  scaleFunction(t, T, a, gamma)
 %{
+    
+    The scaling function can be fit using a polynomial basis with basis
+    taken from Mehta 2002 (https://doi.org/10.1103/PhysRevE.65.046139)
+
     t is rescaled time 0<t<T
     Polynomial function expressing the conditions for a scaling function.
     F(0) = 0, F(1) = 0
@@ -7,6 +11,9 @@ function sf =  scaleFunction(t, T, a, gamma)
     F(t) = (a(1)*f1(t) + a(2)*f2(t) + a(3)*f3(t) + a(4)*f4(t) + a(5)*f5(t))
     
     This function returns T^gamma * F(t)
+
+    Written by Joel Hochstetter
+
 %}
 
     f1 = sqrt(30) .* (-1 + t).*t;

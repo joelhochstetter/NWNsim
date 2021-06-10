@@ -1,9 +1,18 @@
 function [events, eventMat] = findEventsFromFilState(sim, eventDetect)
 %{
+    Finds events from junction time-series matrix
+
+    Inputs:
                  sim: Imported simulation
-    eventDetect: struct
+    eventDetect: struct containing details of event detection with
+                    different methods
+
+    Voltage spike method is used in paper
 
     returns vector: events of same length as time-series
+
+
+    Written by Joel Hochstetter
 %}
 
     eventMat = []; %currently only implemented as dGG spike method

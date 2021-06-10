@@ -10,6 +10,8 @@ function [ieiData, ieiTime] = IEI(events, dt, joinperiod, t)
     runMode = 1: use time-step
     runMode = 2: use time-vector to calculate IEI
 
+
+    Written by Joel Hochstetter
 %}
 
     if nargin < 4

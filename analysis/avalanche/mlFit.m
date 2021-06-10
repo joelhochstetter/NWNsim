@@ -15,6 +15,8 @@ function Fit = mlFit(x, fitTrun)
         - MATLAB Stats Toolbox
         - Custom functions: aic, bic, plllike
         - NCC Toolbox (Marshall (2016) doi: 10.3389/fphys.2016.00250)
+
+    Written by: Joel Hochstetter
 %}
 
     Fit     = struct();

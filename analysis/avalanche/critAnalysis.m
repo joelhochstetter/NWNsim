@@ -21,6 +21,9 @@ function results = critAnalysis(events, dt, G, time, V, filename, saveFolder, fi
 
     Outputs:
         results (struct): Saves the results 
+
+
+    Written by Joel Hochstetter
 %}
     
     if nargin < 10

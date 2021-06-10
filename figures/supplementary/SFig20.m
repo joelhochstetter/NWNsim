@@ -13,14 +13,14 @@ params.SimOpt.stopIfDupName = true;
 
 %Set Stimulus
 params.Stim.BiasType     = 'DC'; % 'DC' \ 'AC' \ 'DCandWait' \ 'Ramp' \ 'ACsaw'
-params.Stim.Amplitude    = 0.22; 
+params.Stim.Amplitude    = 0.21; 
 
 
 %Set Components
 params.Comp.onConductance  = 0.7*7.77e-5;
 params.Comp.offConductance  = 0.7*1e-9;
 params.Comp.setVoltage     = 1e-2;
-params.Comp.resetVoltage  = 5e-3;
+params.Comp.resetVoltage   = 5e-3;
 params.Comp.criticalFlux   =  0.01*3.1;
 params.Comp.maxFlux        = 0.015*3.1;
 params.Comp.penalty        =    1;

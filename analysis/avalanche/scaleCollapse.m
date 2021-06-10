@@ -1,5 +1,10 @@
 function [gamma, gamma_vals, RMS_errors, new_t, size_t_ave, size_t_var] = scaleCollapse(lives, lifeFreq, time_t, size_t, Tmax, minTime, minFreq, ToPlot)
 %{
+
+    Uses Marshall (2016) method for extracting exponent which gives the
+    best shape collapse of avalanche temporal profiles.
+
+
     Input: 
         lifeAv:   lifetime of avalanches
        freq: frequency of avalanche
@@ -11,7 +16,8 @@ function [gamma, gamma_vals, RMS_errors, new_t, size_t_ave, size_t_var] = scaleC
     Ouput:
         Determines scale-collapse parameter gamma
 
-    Uses Marshall method
+
+    Written by Joel Hochstetter
 
 %}
 

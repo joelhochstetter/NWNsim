@@ -3,6 +3,20 @@ function [bins, probs, edges] = LogBin(x, nbins, R)
     E.g:
         x = [1,1,1,1,1,5,10,12];
         LogBin(x, 2)
+
+    Inputs:
+        x: vector of data
+    nbins: Number of bins
+        r: Optional ratio between consecutive bins
+
+
+    Outputs:
+        bins: centres of each bin
+       probs: pdf at value of each bin
+       edges: edges between adjacent bins which is a half-open interval [lower, upper)
+
+
+    Written by Joel Hochsteter
 %}
     N = numel(x);
     x = reshape(x, [numel(x), 1]);

@@ -1,4 +1,18 @@
 function events = thresholdCrossingPeaks(x, thresh)
+%{
+    Finds intervals where vector "x" crosses threshold "thresh" before
+    returning below the threshold. Of those intervals finds the maximum
+    value of x in the interval and records events at the time-step
+    corresponding to this maximum
+
+    Ouputs:
+        events: time-series vector. 1 if time-bin contains events, else 0
+
+
+    Written by Joel Hochstetter
+%}
+
+
     events = zeros(size(x));
     [~, above, below] = thresholdCrossing(x, thresh);
     %assumes time-series does not start above threshold else cuts

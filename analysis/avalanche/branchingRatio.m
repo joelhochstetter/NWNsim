@@ -1,6 +1,12 @@
 function branch = branchingRatio(events, binSize)
 %{
     Calculates the branching ratio given binSize
+        
+    As defined in Beggs Plenz J. Neuroscience (2003) 
+        and de Carvalvo Prado PRL (2000)
+    
+    Written by Joel Hochstetter
+
 %}
 
     binned = binData(events, binSize);

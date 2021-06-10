@@ -9,6 +9,9 @@ function [binned, times] = binData(data, tStep, roundUp)
     Outputs:
             binned: sum of the data that goes in that bin
               times: times for the centres of each bin as an index
+
+
+    Written by Joel Hochstetter
 %}
 
     if nargin < 3
