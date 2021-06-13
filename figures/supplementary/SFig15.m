@@ -26,21 +26,29 @@ T  = 3000; %Set simulation time: Must run an integer number of periods for all f
 Amps = [5]; %Specify stimulus amplitudes
 Freqs = [0.25, 0.5, 1]; %Specify stimulus frequencies
 attractorFolder = 'S15attractors'; %set save folder for attractor
-runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
-
-
-%% Calculate Av exponents
-
-
-
-
-%% Run Avalanche simulations
-
-
-
-
+for s = 1:500
+    runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
+end
 
 %% Run Lyapunov simulations
+%set parameters for simulations
+eps   = 5e-4; %size of infintesimal perturbation 
+dt    = 5e-4; %size of simulation time-step
+T     = 200;
+R     = 100; %number of junctions to run Lyapunov simulations for
+
+
+files = dir(strcat(attractorFolder, '/*.mat')); %get attractor simulation files
+numA = numel(files); %number of attractor files
+lyFolder = 'lyapunov'; %folder to save Lyapunov exponent simulations
+
+for i = numA
+    calcLyapunov(attractorFolder, files(i).name, lyFolder, eps, dt, T, 500)
+end
+
+
+%% Calculate avalanche statistics
+
 
 
 
