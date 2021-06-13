@@ -49,18 +49,24 @@ runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
 mxS = 50000;
 nb = 60;
 
-load('AvChangeFreq/f0.25/bs-1/critResults.mat');
+load('/import/silo2/joelh/Criticality/Avalanche/ACavalanches/AvChangeFreqNew/f0.25/bs-1/critResults.mat');
 [bins{1}, prob{1}] = LogBin(critResults.avalanche.sizeAv, nb, mxS);
+% prob{1} = critResults.avalanche.sizeFit.prob;
+% bins{1} = critResults.avalanche.sizeFit.bins;
 
-load('AvChangeFreq/f0.5/bs-1/critResults.mat');
+load('/import/silo2/joelh/Criticality/Avalanche/ACavalanches/AvChangeFreqNew/f0.5/bs-1/critResults.mat');
+% prob{2} = critResults.avalanche.sizeFit.prob;
+% bins{2} = critResults.avalanche.sizeFit.bins;
 [bins{2}, prob{2}] = LogBin(critResults.avalanche.sizeAv, nb, mxS);
 
 
-load('AvChangeFreq/f1/bs-1/critResults.mat');
+load('/import/silo2/joelh/Criticality/Avalanche/ACavalanches/AvChangeFreqNew/f1/bs-1/critResults.mat');
+% prob{3} = critResults.avalanche.sizeFit.prob;
+% bins{3} = critResults.avalanche.sizeFit.bins;
 [bins{3}, prob{3}] = LogBin(critResults.avalanche.sizeAv, nb, mxS);
 
 
-Sim = load('simAvalanches/density0.10/Vstar1/Lx100/bs-1/critResults.mat');
+Sim = load('/import/silo2/joelh/Criticality/Avalanche/FixDensity/Av/density0.10/Vstar1/Lx150/bs-1/critResults.mat');
 Sim = Sim.critResults;
 [bins{4}, prob{4}] = LogBin(Sim.avalanche.sizeAv, nb, mxS);
 
@@ -82,6 +88,9 @@ x = 4:0.01:82;
 y = 1*(x/1).^(-2);
 loglog(x, y, 'r', 'Linewidth', 2);
 
+
+sizeAv = Sim.avalanche.sizeAv;
+[N,edges] = histcounts(sizeAv, 'Normalization', 'probability');
 xlabel('S', 'Fontsize', 15)
 ylabel('P(S)', 'Fontsize', 15)
 xlim([1,5000])

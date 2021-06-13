@@ -1,4 +1,4 @@
-function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T)
+function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T, R)
 % Run Lyapunov Simulations  and saves to file Ly.mat, Ly.h5
 % Inputs
 %   Enter the attractor file and folder from which the simulations starts
@@ -7,6 +7,7 @@ function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T)
 %   eps (double): is the size of perturbation to each junction
 %   dt (size of time-step); Is the size of time-step
 %   T: length of simulation time
+%   R: number of junctions to run Lyapunov simulations for
 %
 %
 % Ouputs:
@@ -133,7 +134,10 @@ function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T)
     params.SimOpt.NodalAnal       = false;
 	
     numTSteps = round(params.SimOpt.T/ params.SimOpt.dt);
-	R = E; %number of junctions to run simulation for
+    
+    if nargin < 7 %number of junctions to run simulation for
+        R = E;
+    end
     gij = zeros(numTSteps, R); %exponential divergence at each time-step for each perturbed junction
     
 

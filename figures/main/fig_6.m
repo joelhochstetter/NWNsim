@@ -1,7 +1,7 @@
 %% Run network under AC stimulus for long time to allow convergence to attractor
 %set-up parameters to run
 dt = 5e-4; %set time-step for simulations
-T  = 2000; %Set simulation time: Must run an integer number of periods for all frequencies
+T  = 3000; %Set simulation time: Must run an integer number of periods for all frequencies
 Amps = [0.1, 0.2, 0.25, 0.3, 0.35, 0.4, 0.6, 0.8, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3]; %Specify stimulus amplitudes
 Freqs = [0.025, 0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.65, 0.75, 0.85, 1.0, 1.25, 1.5, 1.75, 2.0]; %Specify stimulus frequencies
 attractorFolder = 'attractors'; %set save folder for attractor
