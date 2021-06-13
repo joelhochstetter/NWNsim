@@ -3,6 +3,9 @@
         to plot Figures 4d-f
 %}
 
+%% Ko
+
+
 %% Process avalanches from experiments
 
 

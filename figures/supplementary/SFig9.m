@@ -1,11 +1,14 @@
 %% Run simulations / experiments and avalanche results (as in Fig. 4-5)
+%{
+    experimental processed files is provided for quick processing
 
+%} 
 
 %% Import avalanche results
 Sim = load('/import/silo2/joelh/Criticality/Avalanche/FixDensity/Av/density0.10/Vstar1/Lx100/bs120/critResults.mat');
 results = Sim.critResults;
-
-Exp = load('/import/silo2/joelh/nanowire-network-experimental/Adrian/Activation_Data_July_2020/Av2/bs-2/Avalanche_Joint_thresholdPeak_Gt5e-08_rt0.01_nf0/critResults.mat');
+%included is experimental critResults.mat file
+Exp = load('bs-2/Avalanche_Joint_thresholdPeak_Gt5e-08_rt0.01_nf0/critResults.mat');
 
 
 %% Simulation: Calculate avalanche shape collapse exponent with errors
