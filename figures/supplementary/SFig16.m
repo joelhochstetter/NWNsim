@@ -18,8 +18,8 @@ Szbins   = cell(numel(binSize, numel(Vstars)));
 Szprob   = cell(numel(binSize, numel(Vstars)));
 Tmbins   = cell(numel(binSize, numel(Vstars)));
 Tmprob   = cell(numel(binSize, numel(Vstars)));
-ASlife        = cell(numel(binSize, numel(Vstars)));
-ASsize      = cell(numel(binSize, numel(Vstars)));
+ASlife   = cell(numel(binSize, numel(Vstars)));
+ASsize   = cell(numel(binSize, numel(Vstars)));
 
 
 for v = 1:numel(Vstars)
@@ -34,8 +34,8 @@ for v = 1:numel(Vstars)
         Szprob{v,j} = critResults.avalanche.sizeFit.prob;
         Tmbins{v,j} = critResults.avalanche.timeFit.bins;
         Tmprob{v,j} = critResults.avalanche.timeFit.prob;
-        ASlife{v,j}    = critResults.avalanche.avSizeFit.mLife;
-        ASsize{v,j}  = critResults.avalanche.avSizeFit.mSize;        
+        ASlife{v,j} = critResults.avalanche.avSizeFit.mLife;
+        ASsize{v,j} = critResults.avalanche.avSizeFit.mSize;        
     end
 end
 
