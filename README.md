@@ -1,4 +1,4 @@
-# neuromorphicNWN
+# NWNsim
 
 This repository contains code to simulate neuromorphic nanowire networks and produce all simulations analysis for the manuscript
 > Joel Hochstetter, Ruomin Zhu, Alon Loeffler, Adrian Diaz-Alvarez, Tomonobu Nakayama, Zdenka Kuncic _Avalanches and edge-of-chaos learning in neuromorphic nanowire networks_
