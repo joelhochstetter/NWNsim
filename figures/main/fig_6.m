@@ -18,14 +18,14 @@ T     = 200;
 files = dir(strcat(attractorFolder, '/*.mat')); %get attractor simulation files
 numA = numel(files); %number of attractor files
 lyFolder = 'lyapunov'; %folder to save Lyapunov exponent simulations
+E = 261; %number of junctions simulations are run for
 
-for i = numA
-    calcLyapunov(attractorFolder, files(i).name, lyFolder, eps, dt, T)
+parfor i = 1:numA
+    calcLyapunov(attractorFolder, files(i).name, lyFolder, eps, dt, T, E)
 end
 
 
 %% Load relevant Lyapunov exponents
-E = 261; %number of junctions simulations are run for
 li = zeros(numA, E); %junction Lyapunov exponents for each simulation
 ml = zeros(numA, 1);
 Amp = zeros(numA, 1); %amplitude of simulation stimulus
@@ -61,8 +61,6 @@ imagesc([0.02, 2], [0.1,3], ml_2d);
 ylabel('A (V)','fontsize',10)
 xlabel('f (Hz)','fontsize',10)
 set(gca,'YDir','normal')
-inferno1 = inferno;
-colormap(inferno1);
 caxis(crange);
 cb = colorbar;
 cb.Title.String = '\lambda (s^{-1})';

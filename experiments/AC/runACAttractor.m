@@ -17,7 +17,7 @@ function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
 % Written by: Joel Hochstetter
 
 
-    if nargin < 5
+    if nargin < 6
         connFile = '2016-09-08-155153_asn_nw_00100_nj_00261_seed_042_avl_100.00_disp_10.00.mat';
     end
 
@@ -29,7 +29,7 @@ function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
 
     % Set Simulation Options
     params.SimOpt.saveSim         = true;
-    params.SimOpt.useParallel     = false; %can set to true to allow parallel processing
+    params.SimOpt.useParallel     = true; %can set to true to allow parallel processing
     params.SimOpt.hdfSave         = true;  %saves junction parameters to a 'hdf5' file
     params.SimOpt.saveSwitches         = true; %to save memory set this to false and "hdfSave" to false
     params.SimOpt.stopIfDupName = true; %this parameter only runs simulation if the savename is not used.

@@ -20,7 +20,7 @@ joinperiod = 30000; %each simulation was 30s = 30000 time-steps
 
 
 %% Critical simulation: Load corresponding conductance time-series and events file
-baseFolder = 'Av/density0.10/Vstar1.0/Lx100/';
+baseFolder = 'Av/density0.10/Vstar1/Lx100/';
 G = load(strcat(baseFolder, '/netC.mat'));
 G2 = G.netC;
 events = load(strcat(baseFolder, '/events.mat'));

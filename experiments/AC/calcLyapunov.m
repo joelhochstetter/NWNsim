@@ -149,7 +149,10 @@ function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T, R)
         params.SimOpt.nameComment = strcat('_eps', num2str(eps), '_i', num2str(i,'%03.f'));
         params.misc.perturbID     = i;
         files = dir(strcat(params.SimOpt.saveFolder, '/*', params.SimOpt.nameComment, '.mat'));
-        if numel(files) == 0              
+        if numel(files) == 0  || isempty(who('-file', strcat(files(1).folder, '/', files(1).name), 'sim')) %checks if contains sim
+            if numel(files) > 0 && isempty(who('-file', strcat(files(1).folder, '/', files(1).name), 'sim')) %if savefile doesnt contain sim delete sim
+                delete(strcat(files(1).folder, '/', files(1).name))
+            end                            
             t =  multiRun(params);
             gij(:,i) = t{1}.Output.LyapunovMax; %get exponential divergence at each time-bin
         else
@@ -163,7 +166,7 @@ function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T, R)
     params.SimOpt = rmfield(params.SimOpt, 'unpertFilState'); %remove unperturbed filament state from params for saving
     
    %% Calculate lyapunov and save
-    skipFraction = 0.3; %Skip time-steps calculating mean. Speeds up convergence of Lyapunov exponent
+    skipFraction = 1.0;%0.3; %Skip time-steps calculating mean. Speeds up convergence of Lyapunov exponent
     numTStep = round(params.SimOpt.T/ params.SimOpt.dt*(1-skipFraction)); %number of time-steps in simulations
     numT = round(params.SimOpt.T * params.Stim.Frequency*(1-skipFraction)); %number of periods
     lij    = zeros(numT, E); %Lyapunov exponent up to end of each period
@@ -173,8 +176,11 @@ function li = calcLyapunov(attractorFolder, Attractor, lyFolder, eps, dt, T, R)
     for j = 1:numT
         lij(j,:) = mean(gij1(1:floor(numTStep/numT)*j,:));
     end
-
-
+    
+    if numel(lij) == 0
+        lij = 0;
+    end
+    
     li = lij(end,:); %Junction Lyapunov exponents
     ml = mean(li); %maximum Lyapunov exponent
 

@@ -4,8 +4,8 @@ params = struct();
 % Set Simulation Options
 params.SimOpt.useWorkspace    = false;
 params.SimOpt.saveSim         = true;
-params.SimOpt.T               = 10.0; 
-params.SimOpt.dt              = 1e-3;
+params.SimOpt.T               = 35.0; 
+params.SimOpt.dt              = 1e-2;
 params.SimOpt.useParallel     = false;
 params.SimOpt.hdfSave         = true;
 params.importSwitch = false;
@@ -13,7 +13,7 @@ params.SimOpt.stopIfDupName = true;
 
 %Set Stimulus
 params.Stim.BiasType     = 'DC'; % 'DC' \ 'AC' \ 'DCandWait' \ 'Ramp' \ 'ACsaw'
-params.Stim.Amplitude    = 0.21; 
+params.Stim.Amplitude    = 0.22; 
 
 
 %Set Components
@@ -47,11 +47,13 @@ t = multiImport(params);
 
 
 %% Load experimental dataset
-
+load('NWNsim/experiments/experimental/experimental_network_1_timeseries_change_voltage.mat')
+G = netC{1};
+V = voltage(1);
+tm = dt*[1:numel(G)];
 
 
 %% Plot Supp Fig 20
-[G, V, tm, fname] = importByType(3, '/import/silo2/joelh/nanowire-network-experimental/Adrian/Activation_Data_July_2020/S6.M1_2/act_preamp_100K_varying_voltage', 13);
 tend = 35;
 tvec = a{1}.Stim.TimeAxis;
 
@@ -59,7 +61,7 @@ figure('color','w', 'units', 'centimeters', 'OuterPosition', [5 5 15 15]);
 h = [];
 h(2) = semilogy(tvec, a{1}.netC);
 hold on;
-h(1) = semilogy(tm, runningMean(G,20));
+h(1) = semilogy(tm, runningMean(G, 20));
 h(3) = semilogy(tvec, t{1}.netC);
 xlabel('t (s)')
 ylabel('G (S)')

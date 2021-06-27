@@ -5,10 +5,11 @@ plengths = 5:15:65; %specify source-drain path lengths
 saveFolder = 'n540j1079/'; %name folder to same simulations
 Amps = (0.005:0.0005:0.03); %these are re-scaled by path length
 rescalePLength = true; %multiplies amplitudes by source-drain path length
+T = 1000; % simulation time
 
 for p = plengths
-    nameComment = strcat('_sd', num2str(contactDistance));
-    DC_Vsweep(saveFolder, Amps, T, connFile,  0, '', -1, rescalePLength, false, 0, p, false, false, 1, nameComment)
+    saveFolder1 = strcat(saveFolder, 'sd', num2str(p));
+    DC_Vsweep(saveFolder1, Amps, T, connFile,  0, '', -1, rescalePLength, false, 0, p, false, false, 1)
 end
     
 
@@ -25,7 +26,7 @@ for j = 1:numel(plengths)
     params = struct();
     params.importAll = true;
     params.SimOpt.useParallel = true;
-    params.SimOpt.saveFolder = strcat('sd', num2str(p));
+    params.SimOpt.saveFolder = strcat(saveFolder, 'sd', num2str(p));
     sims = multiImport(params);
     
     timeVec = sims{1}.Stim.TimeAxis;

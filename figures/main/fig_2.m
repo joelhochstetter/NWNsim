@@ -1,6 +1,6 @@
 %% Run simulations varying V 
 %% Vsweep with Initial state of all junctions 0
-T = 1000; %set simulation time
+T = 10; %set simulation time
 uninitFolder = 'uninit'; %folder for uninitialised network
 %make sure these simulations are only sims saved in uninitFolder
 %extra datapoints specified near transition

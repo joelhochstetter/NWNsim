@@ -85,30 +85,6 @@ function results = critAnalysis(events, dt, G, time, V, filename, saveFolder, fi
         return
     end
     
-    %% Fourier transform
-    figure('visible','off');
-    [beta, dbeta] = plotPSD(time, G);
-    results.PSD.beta  = beta;
-    results.PSD.dbeta = dbeta;
-    %need to give uncertainity as well
-    saveas(gcf, strcat(saveFolder, '/PSD.png'))
-    close all;
-    
-    %% Auto correlation function
-%     figure('visible','off');
-%     [alpha, dalph] = plotACF(G, dt, true, struct('cLevel', 0.95));
-%     results.ACF.alpha  = alpha;
-%     results.ACF.dalph = dalph;
-%     saveas(gcf, strcat(saveFolder, '/ACF.png'))
-%     close all;
-    
-    
-    %% dG distribution
-%     figure('visible','off');
-%     results.dG = plotDeltaG(G, 0, struct('useML', false), joinperiod);%fitML));
-%     saveas(gcf, strcat(saveFolder, '/dG.png'))
-%     close all;
-    
     %% Event trains
     results.events.eventTrain     = events;
     results.events.numEvents      = sum(events);

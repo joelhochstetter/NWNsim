@@ -62,7 +62,6 @@ function [OutputDynamics, SimulationOptions] = simulateNetworkLite(Connectivity,
     edgeList        = Connectivity.EdgeList.';
     RHS             = zeros(V+numOfElectrodes,1); % the first E entries in the RHS vector.
     LHSinit         = zeros(V+numOfElectrodes, V+numOfElectrodes);
-    disp(SimulationOptions.EventThreshold)
     electrodeCurrent   = zeros(niterations, numOfElectrodes);
 
     if SimulationOptions.saveFilStateOnly == true

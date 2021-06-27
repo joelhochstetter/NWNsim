@@ -141,7 +141,7 @@ function DC_Vsweep(saveFolder, Amps, T, connFile, initStateFile , initStateFolde
     % Set Simulation Options
     params.SimOpt.useWorkspace    = false; %only save simulations do need keep values in workspace
     params.SimOpt.saveSim         = true;
-    params.SimOpt.useParallel     = false; %to use a parallel simulations specify this as true
+    params.SimOpt.useParallel     = true; %to use a parallel simulations specify this as true
     %if you want to run only one simulation at once then you can specify idx
         %and uncomment next line
 %     params.SimOpt.runIndex = idx; 

@@ -31,7 +31,7 @@ function NLTres = attractorToNLT(attractorFolder, saveFolder, nds)
     files = dir(strcat(attractorFolder, '/*.mat'));
     
     dt = 1e-3;
-    T  = 80;
+    T  = 1;
     
     numTSteps = round(T/dt);
     
@@ -54,7 +54,7 @@ function NLTres = attractorToNLT(attractorFolder, saveFolder, nds)
     squRNMSE = zeros(numel(files), 1);
     squResult  = zeros(numel(files), numTSteps);         
     
-    for j = 1:numel(files)
+    parfor j = 1:numel(files)
         sim = multiImport(struct('SimOpt', struct('saveFolder', attractorFolder), 'importByName', files(j).name));
         
         %% set-up parameters
@@ -92,7 +92,7 @@ function NLTres = attractorToNLT(attractorFolder, saveFolder, nds)
         
         params.Conn.filename = sim{1}.ConnectFile;     
         if isfield(sim{1}, 'swLam')
-            initLamda                  = sim{1}.swLam(end,1:E)';
+            initLamda                  = sim{1}.swLam(end,:)';
         elseif isfield(sim{1}, 'finalStates')
             initLamda                  = sim{1}.finalStates';
         else

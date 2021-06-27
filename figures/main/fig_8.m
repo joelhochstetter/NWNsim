@@ -19,16 +19,17 @@ for i = 1:numA
 end
 
 %% Run stimulus for initial period to relax to attractor (as in figure 6)
-attractorFolder = '...';  %name of folder containing networks relaxed to attractor
+attractorFolder = 'attractors';  %name of folder containing networks relaxed to attractor
 
 
 %% Run non-linear transformation task
-saveFolder = '...'; %name of folder to save simulation
+saveFolder = 'NLT'; %name of folder to save simulation
 NLTres = attractorToNLT(attractorFolder, saveFolder);
+save(strcat(attractorFolder, '/', saveFolder, '/NLTresults.mat'), 'NLTres')
 
 
 %% Import non-linear transformation task
-load('NLTresults.mat', 'NLTres')
+load(strcat(attractorFolder, '/', saveFolder, '/NLTresults.mat'), 'NLTres')
 
 dblAcc_2d = zeros(numel(Amps), numel(Freqs));
 phsAcc_2d = zeros(numel(Amps), numel(Freqs));
@@ -60,10 +61,10 @@ end
 
 
 %% Plot figure
-close all;
+idx = r >= 10;
+
 figure;
 set(gcf, 'color', 'w');
-%set figure size
 hold on;
 lxx = -40:0.1:40;
 byy = 0.88*ones(size(lxx));
@@ -71,10 +72,10 @@ gyy = 0.50*ones(size(lxx));
 kyy = 0.0*ones(size(lxx));
 plot([0,0], [0,1], 'k:', 'Linewidth', 1.5, 'HandleVisibility', 'off')
 
-plot(ml, sinAcc, 'b.', 'MarkerSize', 10);
-plot(ml, squAcc, 'g.', 'MarkerSize', 10);
-plot(ml, phsAcc, 'm.', 'MarkerSize', 10);
-plot(ml, dblAcc,  'k.', 'MarkerSize', 10);
+plot(ml(idx), sinAcc(idx), 'b.', 'MarkerSize', 10);
+plot(ml(idx), squAcc(idx), 'g.', 'MarkerSize', 10);
+plot(ml(idx), phsAcc(idx), 'm.', 'MarkerSize', 10);
+plot(ml(idx), dblAcc(idx),  'k.', 'MarkerSize', 10);
 xlabel('\lambda (s^{-1})','fontweight','normal','fontsize',10)
 ylabel('Accuracy','fontweight','normal','fontsize',10)
 lg = legend('sin', 'square',  '\pi/2-shift', '2f', 'location', 'west');

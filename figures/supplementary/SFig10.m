@@ -8,7 +8,7 @@ attractorFolder = '.'; %set save folder for attractor
 %specify relevant filenames
 attractorsToUse = cell(3,1);
 for i = 1:3
-    attractorsToUse{i} = strcat2({'tl_T3000_ACsaw', Amp(i) 'V_f', Freq(i), 'Hz_s0.01_r0.01_c0.01_m0.015_b10_p1.mat'});
+    attractorsToUse{i} = strcat2({'t2_T3000_ACsaw', Amp(i) 'V_f', Freq(i), 'Hz_s0.01_r0.01_c0.01_m0.015_b10_p1.mat'});
 end
 %importSwitch required to get data to plot. Must have been run to saveSwitch = true
 

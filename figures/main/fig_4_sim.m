@@ -8,7 +8,7 @@
 % L = 150x150, density = 0.1 nw/(um)^2
 %From bash: 
 % python multi_generate_networks.py --Lx 150 --seedMax 1000 --density 0.10 --folder nets/Density0.10ChangeSize
-netFolder = 'nets/Density0.10ChangeSize';
+netFolder = 'Density0.10ChangeSize'; %'nets/Density0.10ChangeSize';
 
 %ensure all networks  have source-drain paths
 GetConnectedNWNs(netFolder)

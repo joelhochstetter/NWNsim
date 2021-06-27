@@ -31,13 +31,13 @@ function GetConnectedNWNs(folder, rectFraction)
     %% Extract seeds and SD path lengths with rectangular electrodes
     files = dir(strcat(folder, '/*asn*.mat'));
     N = numel(files);
-    cd(folder)
+
     xFraction = 1.0;
     SDdists = zeros(N,1);
     Lx      = zeros(N,1);
     seed = zeros(N,1);
 
-    parfor i = 1:N
+    parfor i = 1:10
         Connectivity = getConnectivity(struct('filename', strcat(folder, '/', files(i).name)));
         [Connectivity, ~, SDpath, ~, ~] = addRectElectrode(Connectivity, rectFraction, xFraction);
         SDdists(i) = SDpath;
@@ -45,9 +45,10 @@ function GetConnectedNWNs(folder, rectFraction)
         seed(i) = round(Connectivity.seed);
     end
     
+    Lvals = sort(unique(Lx));
 
     %% Save seeds of networks which have source-drain paths
-    for L = Lvals
+    for L = Lvals'
         conSeeds = sort(seed((SDdists < inf) & (Lx == L)));
         save(strcat2({folder, '/conn_lx_', L, '.mat'}), 'conSeeds')
     end

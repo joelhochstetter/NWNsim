@@ -101,12 +101,7 @@ function [gamma, gamma_vals, RMS_errors, new_t, size_t_ave, size_t_var] = scaleC
             for d = 1:numel(lives)
                 m_sz       = m_sz +size_t_int{d}(t)/lives(d)^(gamma_vals(g));
                 m_sq_sz = m_sq_sz + (size_t_int{d}(t)/lives(d)^(gamma_vals(g)))^2;
-%                 if size_t_int{d}(t) < minVal
-%                     minVal = size_t_int{d}(t);%/lifeAv(d)^(gamma_vals(g));
-%                 end
-%                 if size_t_int{d}(t) > maxVal
-%                     maxVal = size_t_int{d}(t);%/lifeAv(d)^(gamma_vals(g));
-%                 end                
+             
             end
             m_sz         = m_sz/numel(lives);
             m_sq_sz   = m_sq_sz/numel(lives);
@@ -119,14 +114,6 @@ function [gamma, gamma_vals, RMS_errors, new_t, size_t_ave, size_t_var] = scaleC
         RMS_errors(g) = RMS_errors(g)/(maxVal - minVal)^2;%*lifeAv(d)^(2*gamma_vals(g));
     end
     
-    %% Plot fitting results
-%     if ToPlot
-%         figure;
-%         plot(gamma_vals, RMS_errors);
-%         xlabel('\gamma')
-%         ylabel('RMS error')
-%     end
-    
     %% Get gamma
     [~, gm] = min(RMS_errors); %index for best gamma 
 
@@ -136,20 +123,17 @@ function [gamma, gamma_vals, RMS_errors, new_t, size_t_ave, size_t_var] = scaleC
     %% Plot scaling function
     if ToPlot
         subplot(1,2,1);
-    %     boundedline(new_t, size_t_ave(gm,:), sqrt(size_t_var(gm,:)), 'transparency', 0.1)%, 'k--',)    
         for i = 1:numel(lives)
             hold on;        
             plot(time_t{i}, size_t{i})
         end
-    %     plot(new_t, size_t_ave(gm,:), 'k', 'Linewidth', 2.5)
         xlabel('t')
         ylabel('s(t,T)')
-    %     title(strcat2({'1/\sigma\nu z = ', gamma + 1}))
         axis square;
         box on;
 
         subplot(1,2,2);
-        boundedline(new_t, size_t_ave(gm,:), sqrt(size_t_var(gm,:)), 'transparency', 0.1)%, 'k--',)    
+        boundedline(new_t, size_t_ave(gm,:), sqrt(size_t_var(gm,:)), 'transparency', 0.1)  
         for i = 1:numel(lives)
             hold on;        
             plot(re_tm{i}, size_t{i}/lives(i)^gamma)

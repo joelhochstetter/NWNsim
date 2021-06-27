@@ -79,18 +79,18 @@ function [filename] = saveSim(Stimulus,SimulationOptions,Output,Components, Conn
     
     %this check occurs again in case of duplicities from parallel sim
     %check if the filename exists already and updates the name 
-    if exist(strcat(filename,'.mat'), 'file') 
+    if exist(strcat(SimulationOptions.saveFolder, '/', filename,'.mat'), 'file') 
         %check that the file 
-        currFile = load(strcat(filename,'.mat'), 'runID');
+        currFile = load(strcat(SimulationOptions.saveFolder, '/', filename,'.mat'), 'runID');
         if isfield(currFile, 'runID') && runID == currFile.runID
             %save without issues
         else %increment number        
             num = 1;
-            while exist(strcat(filename, '_#', num2str(num), '.mat'), 'file') > 0
-                %filename = strcat(filename, num2str(num));
+            while exist(strcat(SimulationOptions.saveFolder, '/', filename, '_#', num2str(num), '.mat'), 'file') > 0
+                %filename = strcat(SimulationOptions.saveFolder, '/', filename, num2str(num));
                 num = num + 1;
             end
-            filename = strcat(filename, '_#', num2str(num));
+            filename = strcat(SimulationOptions.saveFolder, '/', filename, '_#', num2str(num));
         end
     end 
     
