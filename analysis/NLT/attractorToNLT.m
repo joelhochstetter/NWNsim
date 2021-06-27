@@ -31,7 +31,7 @@ function NLTres = attractorToNLT(attractorFolder, saveFolder, nds)
     files = dir(strcat(attractorFolder, '/*.mat'));
     
     dt = 1e-3;
-    T  = 1;
+    T  = 80;
     
     numTSteps = round(T/dt);
     
