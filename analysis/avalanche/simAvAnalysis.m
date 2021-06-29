@@ -135,7 +135,7 @@ function simAvAnalysis(simFolder, saveBaseFolder, Vstar, Lx, density, binSizes, 
                 filename = '';                
                 timeVec = 1e-3:1e-3:(Tend*NumSims);
 
-                for j = 1:numel(binSizes)
+                parfor j = 1:numel(binSizes)
                     binSize = binSizes(j);
                     disp(strcat2({'i: ', v, ',binsize = ', binSize}))
                     saveFolder1 = strcat(saveFolder, '/bs', num2str(binSize), '/');    

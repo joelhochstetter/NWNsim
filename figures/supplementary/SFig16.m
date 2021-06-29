@@ -3,31 +3,36 @@
 
 
 %% Loop over bin-sizes and produce criticality analysis
-baseFolder = 'simAvalanches';
+baseFolder = '.'; %'sims';
 density = 0.10;
 L = 100; %network size
-binSize = [80:40:320]; %use Average inter event interval
-simAvAnalysis(saveFolder, baseFolder, 1.0, L, density, binSize, NSims, 30);
+binSize = [80:40:320]; %in units of ms
+NSims = 1000;
+fitML = false;
+avFolder = 'simAvalanches';
+Vstar =[0.7, 1.0, 1.8];
+
+simAvAnalysis(baseFolder, avFolder, Vstar, L, density, binSize, NSims, 30, fitML);
 
 
 
 %% Load criticality analysis results
 Vstars = [0.7, 1.0, 1.8];
 
-Szbins   = cell(numel(binSize, numel(Vstars)));
-Szprob   = cell(numel(binSize, numel(Vstars)));
-Tmbins   = cell(numel(binSize, numel(Vstars)));
-Tmprob   = cell(numel(binSize, numel(Vstars)));
-ASlife   = cell(numel(binSize, numel(Vstars)));
-ASsize   = cell(numel(binSize, numel(Vstars)));
-
+Szbins   = cell(numel(binSize), numel(Vstars));
+Szprob  = cell(numel(binSize), numel(Vstars));
+Tmbins  = cell(numel(binSize), numel(Vstars));
+Tmprob  = cell(numel(binSize), numel(Vstars));
+ASlife      = cell(numel(binSize), numel(Vstars));
+ASsize    = cell(numel(binSize), numel(Vstars));
+Nbs = numel(binSize);
 
 for v = 1:numel(Vstars)
     for j = 1:Nbs
         Vstar = Vstars(v);
         bs = binSize(j);
 
-        saveName = strcat(baseFolder, '/density',density, '/Vstar', Vstar, '/bs',  num2str(bs), '/critResults.mat');
+        saveName = strcat2({avFolder, '/density', num2str(density, '%.2f'), '/Vstar', Vstar, '/bs',  num2str(bs), '/critResults.mat'});
         critResults = load(saveName);
         critResults = critResults.critResults;
         Szbins{v,j} = critResults.avalanche.sizeFit.bins;

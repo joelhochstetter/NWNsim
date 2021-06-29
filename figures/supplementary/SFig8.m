@@ -70,7 +70,6 @@ V =1;
 d = 0.10;
 nb = 20;
 bs = -1.0;
-AvFolder = 'simAvalanches';
 
 
 Small =  load(strcat(AvFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx50/bs', num2str(bs), '/critResults.mat'));
@@ -119,7 +118,6 @@ V =1;
 d = 0.14;
 nb = 25;
 bs = -1.0;
-AvFolder = 'simAvalanches';
 
 a = 1.2;
 tau    = 2.0; 
@@ -167,7 +165,6 @@ V =1.8;
 d = 0.06;
 nb = 25;
 bs = -1.0;
-AvFolder = 'simAvalanches';
 
 Small =  load(strcat(AvFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx50/bs', num2str(bs), '/critResults.mat'));
 Small = Small.critResults;
@@ -210,7 +207,6 @@ V =1.8;
 d = 0.10;
 nb = 25;
 bs = -1.0;
-AvFolder = 'simAvalanches';
 
 Small =  load(strcat(AvFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx50/bs', num2str(bs), '/critResults.mat'));
 Small = Small.critResults;
@@ -254,7 +250,6 @@ V =1.8;
 d = 0.14;
 nb = 25;
 bs = -1.0;
-AvFolder = 'simAvalanches';
 
 Small =  load(strcat(AvFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx50/bs', num2str(bs), '/critResults.mat'));
 Small = Small.critResults;

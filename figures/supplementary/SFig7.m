@@ -37,7 +37,7 @@ end
 binSize = -1; %use Average inter event interval
 density = [0.06, 0.10, 0.14];
 fitML = false;
-avFolder = 'Av';%'simAvalanches';
+avFolder = 'simAvalanches';
 simAvAnalysis(baseFolder, avFolder, Vstar, Lvals, density, binSize, NSims, T, fitML);
 
 
@@ -48,7 +48,7 @@ mxS = 1000; %maximum avalanche size for plotting
 mxT = 200; %maximum avalanche life-time for plotting
 nb = 25;   %number of bins
 
-Small =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx50/bs-1/critResults.mat'));
+Small =  load(strcat(avFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx50/bs-1/critResults.mat'));
 Small = Small.critResults;
 Sprob{1} = Small.avalanche.sizeFit.prob;
 Sbins{1} = Small.avalanche.sizeFit.bins;
@@ -60,7 +60,7 @@ mLfe{1} = Small.avalanche.avSizeFit.mLife;
 [Tbins{1}, Tprob{1}] = LogBin(Small.avalanche.lifeAv, nb, mxT);
 
 
-Mid =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx100/bs-1/critResults.mat'));
+Mid =  load(strcat(avFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx100/bs-1/critResults.mat'));
 Mid = Mid.critResults;
 Sprob{2} = Mid.avalanche.sizeFit.prob;
 Sbins{2} = Mid.avalanche.sizeFit.bins;
@@ -72,7 +72,7 @@ mLfe{2} = Mid.avalanche.avSizeFit.mLife;
 [Tbins{2}, Tprob{2}] = LogBin(Mid.avalanche.lifeAv, nb, mxT);
 
 
-Big =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx150/bs-1/critResults.mat'));
+Big =  load(strcat(avFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx150/bs-1/critResults.mat'));
 Big = Big.critResults;
 Sprob{3} = Big.avalanche.sizeFit.prob;
 Sbins{3} = Big.avalanche.sizeFit.bins;
@@ -84,7 +84,7 @@ mLfe{3} = Big.avalanche.avSizeFit.mLife;
 [Tbins{3}, Tprob{3}] = LogBin(Big.avalanche.lifeAv, nb, mxT);
 
 
-Fat =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx200/bs-1/critResults.mat'));
+Fat =  load(strcat(avFolder, '/density', num2str(d, '%.2f'), '/Vstar', num2str(V), '/Lx200/bs-1/critResults.mat'));
 Fat = Fat.critResults;
 Sprob{4} = Fat.avalanche.sizeFit.prob;
 Sbins{4} = Fat.avalanche.sizeFit.bins;
@@ -119,7 +119,7 @@ xmin = Fat.avalanche.sizeFit.lc;
 xmax = Fat.avalanche.sizeFit.uc;
 tau    =Fat.avalanche.sizeFit.tau;
 x = xmin:0.01:xmax;
-A = 1.1*Sprob{2}(xmin);
+A = 1.1*Sprob{2}(round(xmin));
 y = A*(x/xmin).^(-tau);
 loglog(x, y, 'r-');
 text(10, 0.2, strcat('S^{-2.0}'), 'Color','r')
@@ -143,7 +143,7 @@ loglog(Tbins{2}, Tprob{2}, 'r.', 'Markersize', ms)
 loglog(Tbins{3}, Tprob{3}, 'b.', 'Markersize', ms)
 loglog(Tbins{4}, Tprob{4}, 'k.', 'Markersize', ms)
 
-xmin = Fat.avalanche.sizeFit.lc;1;
+xmin = Fat.avalanche.sizeFit.lc;
 xmax = Fat.avalanche.sizeFit.uc;
 tau    = Fat.avalanche.sizeFit.tau;
 x = xmin:0.01:xmax;

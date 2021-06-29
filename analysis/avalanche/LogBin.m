@@ -1,22 +1,8 @@
-function [bins, probs, edges] = LogBin(x, nbins, R)
+function [bins, probs, edges] = LogBin(x, nbins, mx, R)
 %{
     E.g:
         x = [1,1,1,1,1,5,10,12];
         LogBin(x, 2)
-
-    Inputs:
-        x: vector of data
-    nbins: Number of bins
-        r: Optional ratio between consecutive bins
-
-
-    Outputs:
-        bins: centres of each bin
-       probs: pdf at value of each bin
-       edges: edges between adjacent bins which is a half-open interval [lower, upper)
-
-
-    Written by Joel Hochsteter
 %}
     N = numel(x);
     x = reshape(x, [numel(x), 1]);
@@ -26,11 +12,14 @@ function [bins, probs, edges] = LogBin(x, nbins, R)
     if nargin == 1
         R = 2;
         nbins = log(max(x))/log(c*R);        
-    elseif nargin == 2
-      
+    elseif nargin < 4
         x = reshape(x, [numel(x), 1]);
         %bins begin floor(c*R^j)
-        R = (max(x)^(1/nbins)/c);
+        if nargin == 2
+            R = (max(x)^(1/nbins)/c);
+        else
+            R = (mx^(1/nbins)/c);
+        end
         if R <= 1
             R = 2;
         end
@@ -43,8 +32,16 @@ function [bins, probs, edges] = LogBin(x, nbins, R)
     
 %     R = 2;
     edges = floor(c*R.^[0:(nbins + 1)]);
-    bins  = floor(c*R.^[0.5:(nbins + 0.5)]);
+    edges = unique(edges);
+
+%     bins = (edges(1:end - 1) + edges(2:end))/2;
+%     bins1 = (edges(1:end - 1) + edges(2:end))/2;
+    
+    bins = floor(sqrt(edges(1:end - 1).*edges(2:end)));
+%     bins  = floor(c*R.^[0.5:(nbins)]);
+    bins    = unique(bins);
     bsize = edges(2:end) - edges(1:end -1);
+%     bins(bsize == 1) = bins1(bsize == 1);
     probs = sum((x < edges(2:end)) & (x >= edges(1:end-1)))./bsize/N;
 
 
