@@ -1,8 +1,6 @@
 %% Generate networks (as in Fig. 4)
-netSize    = 150;
-NumSims = 500;
-
-netFolder = 'nets/Density0.10ChangeSize';
+netSize = 150;
+netFolder = '/import/silo2/joelh/ChangeNetworks/Density0.10ChangeSize/'; %'nets/Density0.10ChangeSize';
 
 
 %% Get network names
@@ -12,8 +10,12 @@ netFolder = 'nets/Density0.10ChangeSize';
 
 if exist(strcat2({netFolder, '/conn_lx_', netSize, '.mat'}), 'file')
     load(strcat2({netFolder, '/conn_lx_', netSize, '.mat'}), 'conSeeds')
+    actualSeed = conSeeds(seedIdx);
+    seed = actualSeed;
+    nets = dir(strcat(netFolder, '/*_seed_', num2str(actualSeed,'%03.f'), '*lx_', num2str(netSize), '*.mat'))';                
 else
-    conSeeds = 0:(NumSims - 1);
+    seed = s - 1
+    nets = dir(strcat(netFolder, '/*_seed_', num2str(seedIdx - 1,'%03.f'), '*lx_', num2str(netSize), '*.mat'))';
 end
 
 addpath(netFolder);
@@ -25,10 +27,9 @@ T  = 3000; %Set simulation time: Must run an integer number of periods for all f
 Amps = [5]; %Specify stimulus amplitudes
 Freqs = [0.25, 0.5, 1]; %Specify stimulus frequencies
 attractorFolder = 'S15attractors'; %set save folder for attractor
+NumSims = 500;
 
 for s = 1:NumSims
-    actualSeed = conSeeds(s); %get seed for netwroks
-    nets = dir(strcat(netFolder, '/*_seed_', num2str(actualSeed,'%03.f'), '*lx_', num2str(netSize), '*.mat'))';                    
     connFile = strcat(netFolder, '/', nets(1).name); %this file must exist. but if everything before is done connectly it will
     nameComment = strcat2({'_seed', num2str(s - 1, '%03.f')});
     runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile, nameComment)
@@ -38,7 +39,7 @@ end
 
 %% Run Lyapunov simulations
 %set parameters for simulations
-eps = 5e-4; %size of infintesimal perturbation 
+eps   = 5e-4; %size of infintesimal perturbation 
 dt    = 5e-4; %size of simulation time-step
 T     = 200;
 R     = 100; %number of junctions to run Lyapunov simulations for
@@ -46,10 +47,10 @@ R     = 100; %number of junctions to run Lyapunov simulations for
 
 files = dir(strcat(attractorFolder, '/*.mat')); %get attractor simulation files
 numA = numel(files); %number of attractor files
-lyFolder = 'S15lyapunov'; %folder to save Lyapunov exponent simulations
+lyFolder = 'lyapunov'; %folder to save Lyapunov exponent simulations
 
-for i = 1:numA
-    calcLyapunov(attractorFolder, files(i).name, lyFolder, eps, dt, T, R)
+for i = numA
+    calcLyapunov(attractorFolder, files(i).name, lyFolder, eps, dt, T, 500)
 end
 
 
@@ -57,7 +58,7 @@ end
 fitML = true;
 saveBaseFolder = 'AvChangeFreq/';
 
-ACAvAnalysis(lyFolder, saveBaseFolder, 'unperturbed', Amps, Freqs, -1, NumSims, T, fitML)
+ACAvAnalysis(attractorFolder, saveBaseFolder, 'unperturbed', Amps, Freqs, -1, NumSims, T, fitML)
 
 
 

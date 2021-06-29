@@ -1,4 +1,4 @@
-function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
+function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile, nameComment)
 %   Inputs:
 %       Amps (vector of doubles): Amplitudes (in volts) on AC triangular signals
 %       Freqs (vector of doubles): Frequency (in Hz) on AC triangular signals
@@ -10,6 +10,7 @@ function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
 %       attractorFolder (string): name of folder to save attractors to
 %       connFile (string): name of file containing the network. Defaults to
 %              100 nws, 261 jns
+%  nameComment (string): name comment. Defaults to no comment.
 %
 %  Outputs: 
 %       Saves simulation files for each attractor
@@ -19,6 +20,10 @@ function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
 
     if nargin < 6
         connFile = '2016-09-08-155153_asn_nw_00100_nj_00261_seed_042_avl_100.00_disp_10.00.mat';
+    end
+    
+    if nargin < 7
+        nameComment = '';
     end
 
 
@@ -35,7 +40,9 @@ function runACAttractor(Amps, Freqs, dt, T, attractorFolder, connFile)
     params.SimOpt.stopIfDupName = true; %this parameter only runs simulation if the savename is not used.
     params.SimOpt.T                = T; %length of the simulation in seconds
     params.SimOpt.dt               = dt; %time step
-
+    params.SimOpt.nameComment = nameComment;
+    
+    
     %Set Stimulus
     params.Stim.BiasType     = 'ACsaw'; % 'DC' \ 'AC' \ 'DCandWait' \ 'Ramp' \ 'ACsaw'
     params.Stim.Amplitude    = Amps; 

@@ -6,7 +6,7 @@
 baseFolder = '.'; %'sims';
 density = 0.10;
 L = 100; %network size
-binSize = [80:40:320]; %in units of ms
+binSize = [80:40:320]'; %in units of ms
 NSims = 1000;
 fitML = false;
 avFolder = 'simAvalanches';
@@ -32,15 +32,15 @@ for v = 1:numel(Vstars)
         Vstar = Vstars(v);
         bs = binSize(j);
 
-        saveName = strcat2({avFolder, '/density', num2str(density, '%.2f'), '/Vstar', Vstar, '/bs',  num2str(bs), '/critResults.mat'});
+        saveName = strcat2({avFolder, '/density', num2str(density, '%.2f'), '/Vstar', Vstar, '/Lx', L, '/bs',  num2str(bs), '/critResults.mat'});
         critResults = load(saveName);
         critResults = critResults.critResults;
-        Szbins{v,j} = critResults.avalanche.sizeFit.bins;
-        Szprob{v,j} = critResults.avalanche.sizeFit.prob;
-        Tmbins{v,j} = critResults.avalanche.timeFit.bins;
-        Tmprob{v,j} = critResults.avalanche.timeFit.prob;
-        ASlife{v,j} = critResults.avalanche.avSizeFit.mLife;
-        ASsize{v,j} = critResults.avalanche.avSizeFit.mSize;        
+        Szbins{j,v} = critResults.avalanche.sizeFit.bins;
+        Szprob{j,v} = critResults.avalanche.sizeFit.prob;
+        Tmbins{j,v} = critResults.avalanche.timeFit.bins;
+        Tmprob{j,v} = critResults.avalanche.timeFit.prob;
+        ASlife{j,v} = critResults.avalanche.avSizeFit.mLife;
+        ASsize{j,v} = critResults.avalanche.avSizeFit.mSize;        
     end
 end
 
