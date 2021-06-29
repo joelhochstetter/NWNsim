@@ -1,15 +1,51 @@
 %{
     This produces avalanche statistics for experiments
         to plot Figures 4d-f
+
+    You can skip to line 51 to use pre-processed analysis.
+
 %}
 
-%% Ko
+%% Load time-series data
+load('experiments/experimental/experimental_network_2_timeseries_fixed_voltage.mat');
 
 
-%% Process avalanches from experiments
+%% Pre-process data for analysis
+%select datasets to use for analysis
+G = netC([1,2,4]);
+
+% get time-vectors, and cut when current is too low
+times = cell(size(G)); %time-vectors
+V  = voltage*ones(numel(G)); %specify voltage for each
+
+Icut = 1e-8;
+
+for i = 1:numel(G)
+    times{i} = dt*[1:numel(G{i})];
+    I = G{i}*V(i);
+    G{i}(I < Icut) = Icut*V(i);
+end
+
+
+%% Process avalanches from data
+Gt = 5e-8; %threshold on delta G to be an event
+r    = 0.03; %threshold on deltaG/G to be an event
+
+fitML = false; %fit using maximum likelihood method
+saveFolder = 'expAvalanches';
+binSize = -1; %use average inter-event-interval as bin-size
+
+%we use threshold Peak event detection method. For other methods see findEvents.m
+eventDetect = struct('method', 'thresholdPeak', 'thresh', Gt, 'relThresh', r); 
+
+% conditions allow us to cut from first to last event. See applyConditions.m
+conditions =  struct('type','eventInterval', 'thresh', Gt, 'ratio', r); 
+
+combinedCritAnalysis(G, V, times, strcat2({saveFolder, '/bs', binSize, '/'}), eventDetect, fitML, binSize, conditions)
 
 
 
+%% SKIP HERE FOR QUICK ANALYSIS 
 %% Import files of processed avalanches
 % Exp = load('expAvalanches/bs-1/critResults.mat'); %for run as above
 Exp = load('experiments/experimental/mainCritResults.mat'); %pre-processed
@@ -19,20 +55,21 @@ Exp = Exp.results;
 
 %% Plot Figure 4
 nb = 20; %number of bins
-
+figure;
 subplot(2,3,4);
 sizeAv = Exp.avalanche.sizeAv;
 xmin = Exp.avalanche.sizeFit.lc;
 xmax = Exp.avalanche.sizeFit.uc;
 tau    = Exp.avalanche.sizeFit.tau;
 dtau  = Exp.avalanche.sizeFit.dTau;
-% [N,edges] = histcounts(sizeAv, 'Normalization', 'probability'); %use linear
+% [N,edges] = histcounts(sizeAv, 'Normalization', 'probability'); %linear bins
+% bins = (edges(1:end-1) + edges(2:end))/2;
 [bins, N, edges] = LogBin(sizeAv, nb);
 
 x = xmin:0.01:xmax;
 A = N(find(edges <= xmin, 1));
 y = A*(x/xmin).^(-tau);
-loglog((edges(1:end-1) + edges(2:end))/2, N, 'r.')
+loglog(bins, N, 'r.')
 hold on;
 loglog(x, y, 'k-');
 xlabel('S')
@@ -52,13 +89,15 @@ lifeAv = Exp.avalanche.lifeAv;
 xmin = Exp.avalanche.timeFit.lc;
 xmax = Exp.avalanche.timeFit.uc;
 alpha    = Exp.avalanche.timeFit.alpha;
-% [N,edges] = histcounts(lifeAv, 'Normalization', 'probability'); %use linear
+% [N,edges] = histcounts(lifeAv, 'Normalization', 'probability'); %linear bins
+% bins = (edges(1:end-1) + edges(2:end))/2;
+
 [bins, N, edges] = LogBin(lifeAv, nb);
 
 x = xmin:0.01:xmax;
 A = N(find(edges <= xmin, 1))/2;
 y = A*(x/xmin).^(-alpha);
-loglog((edges(1:end-1) + edges(2:end))/2, N, 'r.')
+loglog(bins, N, 'r.')
 hold on;
 loglog(x, y, 'k-');
 xlabel('T')
