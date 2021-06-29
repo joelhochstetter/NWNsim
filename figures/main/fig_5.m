@@ -1,3 +1,11 @@
+%{
+    Pre-processed file is provided in NWNsim/experiments/DC/ 
+
+    To use set avFolder = 'NWNsim/experiments/DC/' and run code
+        block on line 47
+%}
+
+
 %% Generate relevant networks
 % L = 100x100, density = 0.1 nw/(um)^2
 %From bash: 

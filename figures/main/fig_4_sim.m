@@ -1,6 +1,8 @@
 %{
     This produces avalanche statistics for simulations
         to plot Figures 4a-c
+
+    Pre-processed file is provided in NWNsim/experiments/DC (see line 43)
 %}
 
 %% Generate networks
@@ -38,7 +40,7 @@ simAvAnalysis(baseFolder, 'simAvalanches', 1.0, L, density, binSize, NSims, T, f
 
 
 %% Import files of processed avalanches
-Sim = load('simAvalanches/density0.10/Vstar1/Lx150/bs-1/critResults.mat');
+Sim = load('experiments/DC/simAvalanches/density0.10/Vstar1/Lx150/bs-1/critResults.mat'); 
 Sim = Sim.critResults;
 
 
