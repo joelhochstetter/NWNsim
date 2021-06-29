@@ -63,20 +63,11 @@ function results = critAnalysis(events, dt, G, time, V, filename, saveFolder, fi
         results.net.G = G;    %network conductance
     end
     
-%     results.net.t = time; %time vector
     results.net.dt = dt; %time vector
     results.net.T = time(end) - time(1) + dt; %time vector
     results.net.V = V;    %voltage
-    results.net.meanG = mean(G);
-    results.net.Grat  = max(G)/min(G);
-
-    results.net.meanV = mean(V);
-%     results.net.meanI = mean(G.*V);
-    results.net.mdGdt = (G(end) - G(1))/(time(end) - time(1));
-    results.net.mindG = min(abs(diff(G))/dt);
     results.net.maxdG = max(abs(diff(G))/dt);
-    results.net.stddG = std(abs(diff(G))/dt);
-    
+   
     if abs(results.net.maxdG*dt) <= eps
         return
     end
@@ -132,7 +123,7 @@ function results = critAnalysis(events, dt, G, time, V, filename, saveFolder, fi
     
     %% Inter-event interval
     figure('visible','off');
-    results.IEI = plotIEIfromEvents(events, time, struct('useML', fitML), joinperiod);%fitML), joinperiod);
+    results.IEI = plotIEIfromEvents(events, time, struct('useML', false), joinperiod);
     saveas(gcf, strcat(saveFolder, '/IEIdist.png'))
     close all;
 

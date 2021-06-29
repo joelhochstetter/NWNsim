@@ -3,6 +3,11 @@
 %From bash: 
 % python multi_generate_networks.py --Lx 100 --seedMax 1000 --density 0.10 --folder Density0.10ChangeSize
 
+netFolder = 'Density0.10ChangeSize';
+
+%ensure all networks  have source-drain paths
+GetConnectedNWNs(netFolder)
+
 
 %% Run avalanches (as in Fig. 4)
 saveFolder = 'sims/Density0.10ChangeSize';
@@ -10,19 +15,24 @@ NSims = 1000;
 L = 100; %set network size (side-length of square)
 density = 0.1;
 Vstar   = [0.7, 1.0, 1.05, 1.8];
+T = 30;
 
 %loop over seed 
-for seed = 1:1000
-     DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, Vstar)
+parfor vv = 1:numel(Vstar)
+    for seed = 1:NSims
+        v = Vstar(vv);
+        DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, v, T)
+    end
 end
-
-%ensure all networks  have source-drain paths
-GetConnectedNWNs(netFolder)
 
 
 %% Process avalanches
 binSize = 160; %use Average inter event interval at Vstar = 1
-simAvAnalysis(saveFolder, 'simAvalanches', 1.0, L, density, binSize, NSims, 30);
+baseFolder = '.'; %'sims';
+avFolder = 'simAvalanches';
+fitML = false;
+
+simAvAnalysis(baseFolder, avFolder, Vstar, L, density, binSize, NSims, T, fitML);
 
 
 
@@ -37,7 +47,7 @@ edgesS =[0:dS:5000] + 0.5*mod(dS,2);
 dT = 1;
 edgesT =[0:dT:5000] + 0.5*mod(dT,2);
 
-V0pt7 =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar0.7/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
+V0pt7 =  load(strcat(avFolder, '/density', num2str(d, '%.2f'), '/Vstar0.7/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
 V0pt7 = V0pt7.critResults;
 Sprob{1} = V0pt7.avalanche.sizeFit.prob;
 Sbins{1} = V0pt7.avalanche.sizeFit.bins;
@@ -48,7 +58,7 @@ Sbins{1} = (e1(1:end-1) + e1(2:end))/2;
 [Tprob{1}, e1] = histcounts(V0pt7.avalanche.lifeAv, edgesT, 'Normalization', 'probability');
 Tbins{1} = (e1(1:end-1) + e1(2:end))/2;
 
-V1 =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar1/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
+V1 =  load(strcat(avFolder, '/density',num2str(d, '%.2f'), '/Vstar1/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
 V1 = V1.critResults;
 Sprob{2} = V1.avalanche.sizeFit.prob;
 Sbins{2} = V1.avalanche.sizeFit.bins;
@@ -59,7 +69,7 @@ Sbins{2} = (e1(1:end-1) + e1(2:end))/2;
 [Tprob{2}, e1] = histcounts(V1.avalanche.lifeAv, edgesT, 'Normalization', 'probability');
 Tbins{2} = (e1(1:end-1) + e1(2:end))/2;
 
-V1pt05 =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar1.05/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
+V1pt05 =  load(strcat(avFolder, '/density',num2str(d, '%.2f'), '/Vstar1.05/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
 V1pt05 = V1pt05.critResults;
 Sprob{3} = V1pt05.avalanche.sizeFit.prob;
 Sbins{3} = V1pt05.avalanche.sizeFit.bins;
@@ -70,7 +80,7 @@ Sbins{3} = (e1(1:end-1) + e1(2:end))/2;
 [Tprob{3}, e1] = histcounts(V1pt05.avalanche.lifeAv, edgesT, 'Normalization', 'probability');
 Tbins{3} = (e1(1:end-1) + e1(2:end))/2;
 
-V1pt8 =  load(strcat('Av/density', num2str(d, '%.2f'), '/Vstar1.8/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
+V1pt8 =  load(strcat(avFolder, '/density',num2str(d, '%.2f'), '/Vstar1.8/Lx', num2str(L), '/bs', num2str(bs), '/critResults.mat'));
 V1pt8 = V1pt8.critResults;
 Sprob{4} = V1pt8.avalanche.sizeFit.prob;
 Sbins{4} = V1pt8.avalanche.sizeFit.bins;

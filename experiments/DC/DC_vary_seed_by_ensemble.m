@@ -1,4 +1,4 @@
-function DC_vary_seed_by_ensemble(seedIdx, netFolder, netSize, saveFolder, Vstar, EventThreshold) 
+function DC_vary_seed_by_ensemble(seedIdx, netFolder, netSize, saveFolder, Vstar, T, EventThreshold) 
 %{
 Produces a simulation file at specified seed, netFolder, netSize and Vstar
 Converts to discete events inside simulation file
@@ -15,6 +15,7 @@ Note: to run this code in any reasonable length in
           saveFolder: base folder to save simulations.
                         Actual folder: saveFolder/Vstar<Vstar>/seed<seed>
                     Vstar: Voltage in volts
+                          T: duration of each simulation in s
   EventThreshold: Event threshold (r) on junctions. Event is defined as 
                                     |dG/dt|/G > r before returning below r 
                                     Defaults to 1e-3
@@ -25,6 +26,10 @@ Note: to run this code in any reasonable length in
 
     %% event threshold on dG/G for junctions for avalanche analysis
     if nargin < 6
+        T = 30;
+    end
+    
+    if nargin < 7
         EventThreshold = 1e-3;
     end
     
@@ -43,7 +48,7 @@ Note: to run this code in any reasonable length in
     end
     
     %% Get connectivity file
-    connFile = nets(1).name; %this file must exist. but if everything before is done connectly it will
+    connFile = strcat(nets(1).folder, '/', nets(1).name); %this file must exist. but if everything before is done connectly it will
 
     
     %% Set-up name comment and save-name
@@ -55,6 +60,6 @@ Note: to run this code in any reasonable length in
     mkdir(fullfile(saveF1))
     
     %% Run simulation
-    DC_Vsweep(saveF1, Vstar*0.01, 30, connFile, 0 , '', initCon, true, true, 0.025, -1, false, true, EventThreshold, nameComment)
+    DC_Vsweep(saveF1, Vstar*0.01, T, connFile, 0 , '', -1, true, true, 0.025, -1, false, true, EventThreshold, nameComment)
 
 end

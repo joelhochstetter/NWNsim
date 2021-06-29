@@ -13,26 +13,32 @@ netFolder = 'Density0.10ChangeSize'; %'nets/Density0.10ChangeSize';
 %ensure all networks  have source-drain paths
 GetConnectedNWNs(netFolder)
 
+
 %% Run simulations for simulated avalanches
 saveFolder = 'sims/Density0.10ChangeSize';
 NSims = 1000;
 L = 150; %set network size (side-length of square)
 density = 0.1;
 Vstar   = 1;
+T = 30;
+EventThreshold = 1e-3; %threshold on deltaG/G
 
 %loop over seed 
-for seed = 1:1000
-     DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, Vstar)
+parfor seed = 1:NSims
+     DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, Vstar, T)
 end
 
 
 %% Process avalanches from simulations
+baseFolder = 'sims';
 binSize = -1; %use Average inter event interval
-simAvAnalysis(saveFolder, 'simAvalanches', 1.0, L, density, binSize, NSims, 30);
+fitML = true; %use maximum likelihood fitting procedure
+
+simAvAnalysis(baseFolder, 'simAvalanches', 1.0, L, density, binSize, NSims, T, fitML);
 
 
 %% Import files of processed avalanches
-Sim = load('simAvalanches/density0.10/Vstar1/Lx100/bs-1/critResults.mat');
+Sim = load('simAvalanches/density0.10/Vstar1/Lx150/bs-1/critResults.mat');
 Sim = Sim.critResults;
 
 

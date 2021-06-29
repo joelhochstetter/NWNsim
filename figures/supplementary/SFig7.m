@@ -10,19 +10,24 @@
 %% Run DC simulations for avalanches
 % Vstar = 1.8 simulations are run for SFig 8 as well
 
-baseFolder = 'sims';
+baseFolder = '.';%'sims';
 netFolders = {'Density0.06ChangeSize', 'Density0.10ChangeSize', 'Density0.14ChangeSize'};
 NSims = 1000;
 Lvals = [50, 100, 150, 200]; %set network size (side-length of square)
 Vstar     = [1, 1.8];
+T = 30;
 
+
+%%
 %loop over seed 
 for seed = 1:1000
     for d = 1:3
         for L = Lvals
-            saveFolder = strcat(baseFolder, '/', netFolders{d});
-            netFolder = strcat('nets/', netFolders{d});
-            DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, Vstar)
+            for v = Vstar
+                saveFolder = strcat(baseFolder, '/', netFolders{d});
+                netFolder = strcat('nets/', netFolders{d});
+                DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, v)
+            end
         end
     end
 end
@@ -31,7 +36,9 @@ end
 %% Process avalanches from simulations
 binSize = -1; %use Average inter event interval
 density = [0.06, 0.10, 0.14];
-simAvAnalysis(baseFolder, 'simAvalanches', 1.0, Lvals, density, binSize, NSims, 30);
+fitML = false;
+avFolder = 'Av';%'simAvalanches';
+simAvAnalysis(baseFolder, avFolder, Vstar, Lvals, density, binSize, NSims, T, fitML);
 
 
 %% network size dependence: import sims

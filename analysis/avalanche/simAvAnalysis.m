@@ -1,4 +1,4 @@
-function simAvAnalysis(simFolder, saveBaseFolder, Vstar, Lx, density, binSizes, NumSims, Tend)
+function simAvAnalysis(simFolder, saveBaseFolder, Vstar, Lx, density, binSizes, NumSims, Tend, fitML)
 %{
     Once DC simulations are run for avalanche analysis this script extracts
         events and conductance time-series before performing avalanche
@@ -25,6 +25,8 @@ function simAvAnalysis(simFolder, saveBaseFolder, Vstar, Lx, density, binSizes, 
             Lx / density. defaults to 1000
         Tend (double): Length of time simulations were run for. Defaults to
             30s.
+       fitML (boolean): Use maximum likelihood fitting. Defaults to true
+
 
     Output is a file critResults.mat which contains data on IEIs and
         avalanches
@@ -47,11 +49,14 @@ function simAvAnalysis(simFolder, saveBaseFolder, Vstar, Lx, density, binSizes, 
         Tend = 30;
     end
     
+    if nargin < 9
+        fitML = true; %uses maximum like-lihood fitting. 
+    end
+    
     
     %% set-up parameters
     tsteps = round(Tend/1e-3);
 
-    fitML = 1; %uses maximum like-lihood fitting. 
     % Note: to speed up run-time set 'fitML = 0'
     %however then avalanche exponents cannot be 
     % trusted only their distributions
@@ -128,7 +133,7 @@ function simAvAnalysis(simFolder, saveBaseFolder, Vstar, Lx, density, binSizes, 
 
                 %%
                 filename = '';                
-                timeVec = 1e-3:1e-3:(tmax*NumSims);
+                timeVec = 1e-3:1e-3:(Tend*NumSims);
 
                 for j = 1:numel(binSizes)
                     binSize = binSizes(j);

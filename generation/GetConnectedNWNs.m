@@ -37,7 +37,7 @@ function GetConnectedNWNs(folder, rectFraction)
     Lx      = zeros(N,1);
     seed = zeros(N,1);
 
-    parfor i = 1:10
+    parfor i = 1:N
         Connectivity = getConnectivity(struct('filename', strcat(folder, '/', files(i).name)));
         [Connectivity, ~, SDpath, ~, ~] = addRectElectrode(Connectivity, rectFraction, xFraction);
         SDdists(i) = SDpath;

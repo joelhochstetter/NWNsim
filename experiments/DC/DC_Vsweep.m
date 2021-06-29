@@ -176,7 +176,7 @@ function DC_Vsweep(saveFolder, Amps, T, connFile, initStateFile , initStateFolde
         params.SimOpt.NewEdgeRS      = false; %edges connecting electrodes to nanowires are not memristive
         params.SimOpt.RectFractions  = rectFraction;
         params.SimOpt.XRectFraction  = 1.0;    
-        [~, ~, SDpath] = addRectElectrode(Connectivity, params.SimOpt.RectFractions, XRectFraction);
+        [~, ~, SDpath] = addRectElectrode(Connectivity, params.SimOpt.RectFractions, params.SimOpt.XRectFraction);
         %Checks that a path containing
         if SDpath == Inf 
             disp('No such SD path')

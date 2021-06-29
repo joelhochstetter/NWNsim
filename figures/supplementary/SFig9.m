@@ -3,20 +3,57 @@
     experimental processed files is provided for quick processing
         in 'NWNsim/experiments/combinedCritResults.mat'
 
+
+    simulation now uses data from 3000 networks
     simulation processed files for quick processing in 
         NWNsim/DC/L100
+
 %} 
 
+%% Generate networks
+% Follow instructions in generation/README
+% L = 150x150, density = 0.1 nw/(um)^2
+%From bash: 
+% python multi_generate_networks.py --Lx 150 --seedMax 3000 --density 0.10 --folder nets/Density0.10ChangeSize
+netFolder = 'Density0.10ChangeSize'; %'nets/Density0.10ChangeSize';
+
+%ensure all networks  have source-drain paths
+GetConnectedNWNs(netFolder)
+
+
+%% Run simulations for simulated avalanches
+saveFolder = 'sims/Density0.10ChangeSize';
+NSims = 3000;
+L = 100; %set network size (side-length of square)
+density = 0.1;
+Vstar   = 1;
+T = 30;
+
+%loop over seed 
+parfor seed = 1:NSims
+     DC_vary_seed_by_ensemble(seed, netFolder, L, saveFolder, Vstar, T)
+end
+
+
+%% Process avalanches from simulations
+baseFolder = 'sims';
+binSize = -1; %use Average inter event interval
+fitML = true; %use maximum likelihood fitting procedure
+
+simAvAnalysis(baseFolder, 'simAvalanches3000', 1.0, L, density, binSize, NSims, T, fitML);
+
+
+
+
 %% Import avalanche results
-Sim = load('/import/silo2/joelh/Criticality/Avalanche/FixDensity/AvNew1/density0.10/Vstar1/Lx100/bs120/critResults.mat');
+%must start with 'NWNsim' as the current directory
+Sim = load('experiments/DC/simAvalanches3000/density0.10/Vstar0.10/Lx100/bs120/critResults.mat');
 results = Sim.critResults;
 %included is experimental critResults.mat file
 Exp = load('experiments/experimental/combinedCritResults.mat');
 
 
 %% Simulation: Calculate avalanche shape collapse exponent with errors
-baseFolder = '/import/silo2/joelh/Criticality/Avalanche/FixDensity/AvNew/density0.10/Vstar1/Lx100';
-Sim = load(strcat(baseFolder, '/bs120/critResults.mat'));
 results = Sim.critResults;
 events = results.events.eventTrain;
 Tmax = results.avalanche.timeFit.uc;
