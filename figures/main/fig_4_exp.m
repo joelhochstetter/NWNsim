@@ -11,18 +11,24 @@
 
 
 %% Import files of processed avalanches
-Exp = load('expAvalanches/bs-1/critResults.mat');
+% Exp = load('expAvalanches/bs-1/critResults.mat'); %for run as above
+Exp = load('experiments/experimental/mainCritResults.mat'); %pre-processed
+
 Exp = Exp.results;
 
 
 %% Plot Figure 4
+nb = 20; %number of bins
+
 subplot(2,3,4);
 sizeAv = Exp.avalanche.sizeAv;
-xmin = Exp.avalanche.sizeFit.lc - 1;
-xmax = Exp.avalanche.sizeFit.uc + 1;
+xmin = Exp.avalanche.sizeFit.lc;
+xmax = Exp.avalanche.sizeFit.uc;
 tau    = Exp.avalanche.sizeFit.tau;
 dtau  = Exp.avalanche.sizeFit.dTau;
-[N,edges] = histcounts(sizeAv, 'Normalization', 'probability');
+% [N,edges] = histcounts(sizeAv, 'Normalization', 'probability'); %use linear
+[bins, N, edges] = LogBin(sizeAv, nb);
+
 x = xmin:0.01:xmax;
 A = N(find(edges <= xmin, 1));
 y = A*(x/xmin).^(-tau);
@@ -43,12 +49,14 @@ text(10^((1-shift)*log10(xrange(1)) + shift*log10(xrange(2))) ,10^(shift*log10(y
 
 subplot(2,3,5);
 lifeAv = Exp.avalanche.lifeAv;
-xmin = Exp.avalanche.timeFit.lc - 1;
-xmax = Exp.avalanche.timeFit.uc + 1;
+xmin = Exp.avalanche.timeFit.lc;
+xmax = Exp.avalanche.timeFit.uc;
 alpha    = Exp.avalanche.timeFit.alpha;
-[N,edges] = histcounts(lifeAv, 'Normalization', 'probability');
+% [N,edges] = histcounts(lifeAv, 'Normalization', 'probability'); %use linear
+[bins, N, edges] = LogBin(lifeAv, nb);
+
 x = xmin:0.01:xmax;
-A = N(find(edges <= xmin, 1));
+A = N(find(edges <= xmin, 1))/2;
 y = A*(x/xmin).^(-alpha);
 loglog((edges(1:end-1) + edges(2:end))/2, N, 'r.')
 hold on;
