@@ -5,8 +5,11 @@ li = zeros(numA, E); %junction Lyapunov exponents for each simulation
 ml = zeros(numA, 1);
 Amp = zeros(numA, 1); %amplitude of simulation stimulus
 Freq = zeros(numA, 1); %frequency of simulation stimulus
+
+lyFolder = 'lyapunov'; %folder to save Lyapunov exponent simulations
 files = dir(strcat(lyFolder, '/tl*')); %get Lyapunov exponents simulations folders
-%need to ensure files only contains these folders otherwise will not work
+
+%need to ensure folders only contains these files otherwise will not work
 
 for i = 1:numA
     if exist(strcat(files(i).folder, '/', files(i).name,'/LyCalc.mat'), 'file')
