@@ -18,11 +18,11 @@ Network used for Supplementary Figure 20:
 
 To generate networks used in avalanche analysis run the following from commandline (bash):
 
-python multi_generate_networks.py --Lx 50 --LxMax 200 --numSims 4 --seedMax 3100 --density 0.06 --folder Density0.06ChangeSize
+'python multi_generate_networks.py --Lx 50 --LxMax 200 --numSims 4 --seedMax 3100 --density 0.06 --folder Density0.06ChangeSize'
 
-python multi_generate_networks.py --Lx 50 --LxMax 200 --numSims 4 --seedMax 1050 --density 0.10 --folder Density0.10ChangeSize
+'python multi_generate_networks.py --Lx 50 --LxMax 200 --numSims 4 --seedMax 1050 --density 0.10 --folder Density0.10ChangeSize'
 
-python multi_generate_networks.py --Lx 50 --LxMax 200 --numSims 4 --seedMax 1010 --density 0.14 --folder Density0.14ChangeSize
+'python multi_generate_networks.py --Lx 50 --LxMax 200 --numSims 4 --seedMax 1010 --density 0.14 --folder Density0.14ChangeSize'
 
 
 Dependencies:
