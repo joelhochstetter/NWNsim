@@ -3,7 +3,7 @@
 This repository contains code to simulate neuromorphic nanowire networks and produce all simulations analysis for the manuscript
 > Joel Hochstetter, Ruomin Zhu, Alon Loeffler, Adrian Diaz-Alvarez, Tomonobu Nakayama, Zdenka Kuncic. Avalanches and edge-of-chaos learning in neuromorphic nanowire networks. Nature Communications 12, 4008 (2021). https://doi.org/10.1038/s41467-021-24260-z
 
-Please direct questions to Joel Hochstetter (joel.hochstetter@sydney.edu.au).
+Please direct questions to Joel Hochstetter (joel.hochstetter97@gmail.com).
 
 ## Requirements
 For simulations MATLAB is required. Code has been tested on MATLAB2016b and MATLAB2020b.
