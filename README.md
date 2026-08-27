@@ -20,4 +20,6 @@ Add all files and sub-folders in "simulator" to the MATLAB path. Follow instruct
 
 
 ## License
-This code is for non-commercial use under a CC BY license (Creative Commons Attribution 4.0 International License).
+This code is available under a [Attribution-NonCommercial-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-nc-sa/4.0/) 
+
+This license strictly prohibits commercial use of the code or derivatives. This includes the prohibition to use the code for the training of AI models for any commercial purpose. Any research, academic, or personal use is permitted.
